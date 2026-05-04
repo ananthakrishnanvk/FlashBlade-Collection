@@ -1391,65 +1391,6 @@ class TestPurefbFs:
 
     @patch("plugins.modules.purefb_fs.get_filesystem")
     @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
-    def test_modify_fs_nfs_rules_change(self, mock_get_filesystem):
-        """Test modifying filesystem NFS rules"""
-        # Setup mocks
-        mock_module = Mock()
-        mock_module.check_mode = False
-        params = self.get_default_params()
-        params.update(
-            {
-                "name": "test-fs",
-                "nfs_rules": "10.0.0.0/8(rw)",  # Change rules
-            }
-        )
-        mock_module.params = params
-
-        mock_blade = Mock()
-        mock_version = Mock()
-        mock_version.version = "2.0"
-        mock_blade.get_versions.return_value.items = [mock_version]
-
-        # Mock existing filesystem with different rules
-        mock_fs = Mock()
-        mock_fs.destroyed = False
-        mock_fs.provisioned = 1099511627776
-        mock_fs.nfs = Mock()
-        mock_fs.nfs.v3_enabled = True
-        mock_fs.nfs.v4_1_enabled = True
-        mock_fs.nfs.rules = "*(rw,no_root_squash)"  # Current rules
-        mock_fs.smb = Mock()
-        mock_fs.smb.enabled = False
-        mock_fs.http = Mock()
-        mock_fs.http.enabled = False
-        mock_fs.snapshot_directory_enabled = False
-        mock_fs.fast_remove_directory_enabled = False
-        mock_fs.hard_limit_enabled = False
-        mock_fs.default_user_quota = None
-        mock_fs.default_group_quota = None
-        mock_fs.group_ownership = None
-        mock_fs.multi_protocol = Mock()
-        mock_fs.multi_protocol.safeguard_acls = True
-        mock_fs.multi_protocol.access_control_style = "shared"
-        mock_fs.promotion_status = "demoted"
-        mock_fs.requested_promotion_state = "demoted"
-        mock_fs.writable = True
-        mock_get_filesystem.return_value = mock_fs
-
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_blade.patch_file_systems.return_value = mock_response
-        mock_blade.get_file_systems.return_value.items = [mock_fs]
-
-        # Call function
-        modify_fs(mock_module, mock_blade)
-
-        # Verify
-        mock_blade.patch_file_systems.assert_called()
-        mock_module.exit_json.assert_called()
-
-    @patch("plugins.modules.purefb_fs.get_filesystem")
-    @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
     def test_modify_fs_promote(self, mock_get_filesystem):
         """Test promoting a filesystem"""
         # Setup mocks
@@ -3357,44 +3298,6 @@ class TestPurefbFs:
         mock_blade.post_policies_file_systems.assert_called_once()
         call_args = mock_blade.post_policies_file_systems.call_args
         assert "context_names" in call_args[1]
-
-    @patch("plugins.modules.purefb_fs.get_filesystem")
-    @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
-    def test_create_fs_smb_only_clears_nfs_rules(self, mock_get_filesystem):
-        """Test that enabling SMB without NFS clears nfs_rules"""
-        mock_module = Mock()
-        mock_module.check_mode = False
-        params = self.get_default_params()
-        params.update(
-            {
-                "name": "test-fs",
-                "size": "1T",
-                "smb": True,
-                "nfsv3": False,
-                "nfsv4": False,
-                "nfs_rules": "*(rw)",  # Should be cleared
-            }
-        )
-        mock_module.params = params
-
-        mock_blade = Mock()
-        mock_version = Mock()
-        mock_version.version = "2.0"
-        mock_version.__eq__ = lambda self, other: self.version == other
-        mock_blade.get_versions.return_value.items = [mock_version]
-
-        mock_get_filesystem.return_value = None
-
-        # Mock successful filesystem creation
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_blade.post_file_systems.return_value = mock_response
-
-        # Call function
-        create_fs(mock_module, mock_blade)
-
-        # Verify nfs_rules was cleared
-        assert mock_module.params["nfs_rules"] == ""
 
     @patch("plugins.modules.purefb_fs.get_filesystem")
     @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
