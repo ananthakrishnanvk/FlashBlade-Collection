@@ -683,15 +683,15 @@ def modify_fs(module, blade):
                 policy_names=[module.params["policy"]],
                 member_names=[fs_name],
             )
-        if res.status_code != 200:
+        if res.status_code != 200 or getattr(res, "total_item_count", 0) == 0:
             if CONTEXT_API_VERSION in api_version:
-                res = blade.patch_policies_file_systems(
+                res = blade.post_policies_file_systems(
                     policy_names=[module.params["policy"]],
                     member_names=[fs_name],
                     context_names=[module.params["context"]],
                 )
             else:
-                res = blade.patch_policies_file_systems(
+                res = blade.post_policies_file_systems(
                     policy_names=[module.params["policy"]],
                     member_names=[fs_name],
                 )

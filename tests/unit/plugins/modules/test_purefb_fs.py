@@ -1008,7 +1008,7 @@ class TestPurefbFs:
         # Mock successful policy attachment
         mock_patch_response = Mock()
         mock_patch_response.status_code = 200
-        mock_blade.patch_policies_file_systems.return_value = mock_patch_response
+        mock_blade.post_policies_file_systems.return_value = mock_patch_response
         mock_blade.patch_file_systems.return_value = mock_patch_response
         mock_blade.get_file_systems.return_value.items = [mock_fs]
 
@@ -1016,7 +1016,7 @@ class TestPurefbFs:
         modify_fs(mock_module, mock_blade)
 
         # Verify
-        mock_blade.patch_policies_file_systems.assert_called_once()
+        mock_blade.post_policies_file_systems.assert_called_once()
         mock_module.exit_json.assert_called()
 
     @patch("plugins.modules.purefb_fs.get_filesystem")
@@ -2828,7 +2828,7 @@ class TestPurefbFs:
         # Mock failed attach
         mock_attach_response = Mock()
         mock_attach_response.status_code = 400
-        mock_blade.patch_policies_file_systems.return_value = mock_attach_response
+        mock_blade.post_policies_file_systems.return_value = mock_attach_response
 
         # Call function - should fail
         try:
@@ -2837,7 +2837,7 @@ class TestPurefbFs:
             assert str(e) == "fail_json"
 
         # Verify
-        mock_blade.patch_policies_file_systems.assert_called()
+        mock_blade.post_policies_file_systems.assert_called()
         mock_module.fail_json.assert_called()
 
     @patch("plugins.modules.purefb_fs.get_filesystem")
