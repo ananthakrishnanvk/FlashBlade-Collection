@@ -17,12 +17,12 @@ plugins:
       namespace: ''
       version_added: 1.6.0
     purefb_admin:
-      description: Configure Pure Storage FlashBlade Global Admin settings
+      description: Configure Everpure FlashBlade Global Admin settings
       name: purefb_admin
       namespace: ''
       version_added: 1.8.0
     purefb_alert:
-      description: Configure Pure Storage FlashBlade alert email settings
+      description: Configure Everpure FlashBlade alert email settings
       name: purefb_alert
       namespace: ''
       version_added: 1.0.0
@@ -32,17 +32,17 @@ plugins:
       namespace: ''
       version_added: 1.6.0
     purefb_banner:
-      description: Configure Pure Storage FlashBlade GUI and SSH MOTD message
+      description: Configure Everpure FlashBlade GUI and SSH MOTD message
       name: purefb_banner
       namespace: ''
       version_added: 1.4.0
     purefb_bladename:
-      description: Configure Pure Storage FlashBlade name
+      description: Configure Everpure FlashBlade name
       name: purefb_bladename
       namespace: ''
       version_added: 1.0.0
     purefb_bucket:
-      description: Manage Object Store Buckets on a  Pure Storage FlashBlade.
+      description: Manage Object Store Buckets on a  Everpure FlashBlade.
       name: purefb_bucket
       namespace: ''
       version_added: 1.0.0
@@ -52,7 +52,7 @@ plugins:
       namespace: ''
       version_added: 1.20.0
     purefb_bucket_replica:
-      description: Manage bucket replica links between Pure Storage FlashBlades
+      description: Manage bucket replica links between Everpure FlashBlades
       name: purefb_bucket_replica
       namespace: ''
       version_added: 1.0.0
@@ -87,22 +87,27 @@ plugins:
       namespace: ''
       version_added: 1.0.0
     purefb_eula:
-      description: Sign Pure Storage FlashBlade EULA
+      description: Sign Everpure FlashBlade EULA
       name: purefb_eula
       namespace: ''
       version_added: 1.6.0
+    purefb_export:
+      description: Manage filesystem exports on Everpure FlashBlade`
+      name: purefb_export
+      namespace: ''
+      version_added: 1.25.0
     purefb_fleet:
       description: Manage Fusion Fleet
       name: purefb_fleet
       namespace: ''
       version_added: 1.20.0
     purefb_fs:
-      description: Manage filesystemon Pure Storage FlashBlade`
+      description: Manage filesystemon Everpure FlashBlade`
       name: purefb_fs
       namespace: ''
       version_added: 1.0.0
     purefb_fs_replica:
-      description: Manage filesystem replica links between Pure Storage FlashBlades
+      description: Manage filesystem replica links between Everpure FlashBlades
       name: purefb_fs_replica
       namespace: ''
       version_added: 1.0.0
@@ -117,12 +122,12 @@ plugins:
       namespace: ''
       version_added: 1.15.0
     purefb_info:
-      description: Collect information from Pure Storage FlashBlade
+      description: Collect information from Everpure FlashBlade
       name: purefb_info
       namespace: ''
       version_added: 1.0.0
     purefb_inventory:
-      description: Collect information from Pure Storage FlashBlade
+      description: Collect information from Everpure FlashBlade
       name: purefb_inventory
       namespace: ''
       version_added: 1.0.0
@@ -152,17 +157,17 @@ plugins:
       namespace: ''
       version_added: 1.10.0
     purefb_network:
-      description: Manage network interfaces in a Pure Storage FlashBlade
+      description: Manage network interfaces in a Everpure FlashBlade
       name: purefb_network
       namespace: ''
       version_added: 1.0.0
     purefb_ntp:
-      description: Configure Pure Storage FlashBlade NTP settings
+      description: Configure Everpure FlashBlade NTP settings
       name: purefb_ntp
       namespace: ''
       version_added: 1.0.0
     purefb_phonehome:
-      description: Enable or Disable Pure Storage FlashBlade Phone Home
+      description: Enable or Disable Everpure FlashBlade Phone Home
       name: purefb_phonehome
       namespace: ''
       version_added: 1.0.0
@@ -182,10 +187,15 @@ plugins:
       namespace: ''
       version_added: 1.0.0
     purefb_ra:
-      description: Enable or Disable Pure Storage FlashBlade Remote Assist
+      description: Enable or Disable Everpure FlashBlade Remote Assist
       name: purefb_ra
       namespace: ''
       version_added: 1.0.0
+    purefb_realm:
+      description: Manage realms on Everpure FlashBlades
+      name: purefb_realm
+      namespace: ''
+      version_added: 1.25.0
     purefb_remote_cred:
       description: Create, modify and delete FlashBlade object store remote credentials
       name: purefb_remote_cred
@@ -212,12 +222,12 @@ plugins:
       namespace: ''
       version_added: 1.20.0
     purefb_smtp:
-      description: Configure SMTP for Pure Storage FlashBlade
+      description: Configure SMTP for Everpure FlashBlade
       name: purefb_smtp
       namespace: ''
       version_added: 1.0.0
     purefb_snap:
-      description: Manage filesystem snapshots on Pure Storage FlashBlades
+      description: Manage filesystem snapshots on Everpure FlashBlades
       name: purefb_snap
       namespace: ''
       version_added: 1.0.0
@@ -232,12 +242,12 @@ plugins:
       namespace: ''
       version_added: 1.0.0
     purefb_subnet:
-      description: Manage network subnets in a Pure Storage FlashBlade
+      description: Manage network subnets in a Everpure FlashBlade
       name: purefb_subnet
       namespace: ''
       version_added: 1.0.0
     purefb_syslog:
-      description: Configure Pure Storage FlashBlade syslog settings
+      description: Configure Everpure FlashBlade syslog settings
       name: purefb_syslog
       namespace: ''
       version_added: 1.4.0
@@ -247,12 +257,12 @@ plugins:
       namespace: ''
       version_added: 1.0.0
     purefb_timeout:
-      description: Configure Pure Storage FlashBlade GUI idle timeout
+      description: Configure Everpure FlashBlade GUI idle timeout
       name: purefb_timeout
       namespace: ''
       version_added: 1.6.0
     purefb_tz:
-      description: Configure Pure Storage FlashBlade timezone
+      description: Configure Everpure FlashBlade timezone
       name: purefb_tz
       namespace: ''
       version_added: 1.10.0
@@ -281,4 +291,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 1.24.0
+version: 1.25.0

@@ -4,6 +4,129 @@ Purestorage.Flashblade Release Notes
 
 .. contents:: Topics
 
+v1.25.0
+=======
+
+Minor Changes
+-------------
+
+- Add comprehensive testing infrastructure with pytest framework (#502)
+- Add comprehensive unit tests for purefb.py utilities (get_system, purefb_argument_spec)
+- Add coverage reporting with HTML and XML artifacts (#503)
+- Add coverage summary to GitHub Actions job output (#503)
+- Add pytest configuration and shared test fixtures (#502)
+- Add test requirements and directory structure (#502)
+- Add unit test execution to GitHub Actions CI workflow (#503)
+- Add unit tests for common module utilities (#502)
+- Add unit tests for purefb_eula module
+- Add unit tests for purefb_info module
+- Add unit tests for purefb_timeout module
+- Add unit tests for simple modules (purefb_bladename, purefb_timeout, purefb_eula)
+- Add unit tests for time_utils module with 100% coverage (#502)
+- Expand test coverage from 15% to improve code quality and prevent regressions
+- Removed multiple un-pythonic range iterations
+- Standardize all import checks of Pure SDK to use the same variable name
+- common - Add comprehensive docstrings to human_to_bytes, human_to_real, and get_local_tz functions (#494)
+- common - Add get_error_message() utility function for safe API error extraction (#496)
+- purefb - Add comprehensive docstrings to get_system and purefb_argument_spec functions (#494)
+- purefb_fs - Added ``realm`` parameter to support creating filesystems in realms (requires Purity//FB 4.6.1+)
+- purefb_info - Updated to use get_policies_all() method and added policy type breakdown to default output
+
+Bugfixes
+--------
+
+- common - Add remove_duplicates() utility function for list deduplication
+- common - Consolidate duplicate _findstr implementations to prevent UnboundLocalError
+- common - Remove deprecated time conversion functions (replaced by time_utils)
+- purefb - Fix unsafe res.errors[0].message access that could cause IndexError (#496)
+- purefb_ad - Correct encryption type from ``arcfour-hma`` to ``arcfour-hmac``
+- purefb_ad - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_admin - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_alert - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_apiclient - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_banner - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_bladename - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_bucket - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_bucket - Fixed issue creating bucket with no versioning incorrectly failing
+- purefb_bucket - Fixed module.warn() calls to be compatible with Ansible 2.15+ by removing msg= parameter
+- purefb_bucket_access - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_bucket_replica - Added safety checks for empty lists before accessing [0] index
+- purefb_bucket_replica - Added validation for missing target parameter when creating new replica links
+- purefb_bucket_replica - Check actual list length instead of unreliable total_item_count
+- purefb_bucket_replica - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_bucket_replica - Fixed IndexError 'list index out of range' in get_connected() function
+- purefb_bucket_replica - Fixed iteration anti-pattern using range(len()) that could cause IndexError
+- purefb_certgrp - Fix unsafe res.errors[0].message access that could cause IndexError (#497)
+- purefb_certs - Corrects typos in the parameter name.
+- purefb_certs - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_certs - Fixes certificate_type name from array to appliance
+- purefb_certs - Fixes issue where intermediate_certificate was not be applied to certificates.
+- purefb_certs - Removes immutable field certificate_type for the patch operation.
+- purefb_connect - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_connect - Use unified time conversion from time_utils module
+- purefb_dns - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_dns - Use remove_duplicates() from common instead of local remove() function
+- purefb_ds - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_dsrole - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_export - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_fleet - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_fs - Consolidated duplicate get_fs() function and fixed unsafe list access (#493)
+- purefb_fs - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_fs - Fixed failure to apply policies to existing filesystems due to incorrect API check and non-existent patch method
+- purefb_fs - Fixed issue where NFS export policies were applied even when both nfsv3 and nfsv4 were disabled
+- purefb_fs - Fixed issue where SMB policies were applied even when smb parameter was set to false
+- purefb_fs_replica - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_groupquota - Consolidated duplicate get_fs() function and fixed unsafe list access (#493)
+- purefb_groupquota - Fix unsafe res.errors[0].message access that could cause IndexError (#498)
+- purefb_hardware - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_info - Use unified time conversion from time_utils module
+- purefb_keytabs - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_kmip - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_lag - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_lifecycle - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_lifecycle - Use unified time conversion from time_utils module with proper None handling
+- purefb_messages - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_network - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_ntp - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_ntp - Use remove_duplicates() from common instead of local remove() function
+- purefb_phonehome - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_pingtrace - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_policy - Fix UnboundLocalError when policy string is not found
+- purefb_policy - Fix unsafe res.errors[0].message access that could cause IndexError (#499)
+- purefb_policy - Fixed AttributeError with empty policy rules
+- purefb_policy - Use unified time conversion from time_utils module
+- purefb_proxy - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_ra - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_remote_cred - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_s3acc - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_s3user - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_saml - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_saml - Fixed typo in model name
+- purefb_server - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_smtp - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_snap - Consolidated duplicate get_fs() function and fixed unsafe list access (#493)
+- purefb_snap - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_snmp_agent - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_snmp_mgr - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_subnet - Fix unsafe res.errors[0].message access that could cause IndexError (#500)
+- purefb_syslog - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- purefb_target - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- purefb_tz - Fix UnboundLocalError when timezone string is not found
+- purefb_tz - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- purefb_user - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- purefb_user - Fixed NameError by replacing deprecated AdminRole with ReferenceWritable when changing user roles
+- purefb_user - Use unified time conversion from time_utils module
+- purefb_userpolicy - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- purefb_userquota - Consolidated duplicate get_fs() function and fixed unsafe list access (#493)
+- purefb_userquota - Fix unsafe res.errors[0].message access that could cause IndexError (#501)
+- time_utils - Add unified time conversion module with proper error handling and input validation
+
+New Modules
+-----------
+
+- purestorage.flashblade.purefb_export - Manage filesystem exports on Everpure FlashBlade`
+- purestorage.flashblade.purefb_realm - Manage realms on Everpure FlashBlades
+
 v1.24.0
 =======
 
