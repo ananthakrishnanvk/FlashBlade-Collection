@@ -896,7 +896,14 @@ def update_smb_share_policy(module, blade):
                 policy_names=[module.params["name"]],
                 filter="principal='" + module.params["principal"] + "'",
             )
-        if (
+        if current_policy_rule.status_code != 200:
+            module.fail_json(
+                msg="Failed to get SMB export policy rules for {0}. Error: {1}".format(
+                module.params["name"],
+                current_policy_rule.errors[0].message,
+                )
+            )
+        elif (
             current_policy_rule.status_code == 200
             and current_policy_rule.total_item_count == 0
         ):
@@ -1805,7 +1812,14 @@ def update_network_access_policy(module, blade):
                 policy_names=[module.params["name"]],
                 filter="client='" + module.params["client"] + "'",
             )
-        if (
+        if current_policy_rule.status_code != 200:
+            module.fail_json(
+                msg="Failed to get network access policy rules for {0}. Error: {1}".format(
+                    module.params["name"],
+                    current_policy_rule.errors[0].message,
+                )
+            )
+        elif (
             current_policy_rule.status_code == 200
             and current_policy_rule.total_item_count == 0
         ):
@@ -2333,7 +2347,14 @@ def update_nfs_policy(module, blade):
                 policy_names=[module.params["name"]],
                 filter="client='" + module.params["client"] + "'",
             )
-        if (
+        if current_policy_rule.status_code != 200:
+            module.fail_json(
+                msg="Failed to get NFS export policy rules for {0}. Error: {1}".format(
+                    module.params["name"],
+                    current_policy_rule.errors[0].message,
+                )
+            )
+        elif (
             current_policy_rule.status_code == 200
             and current_policy_rule.total_item_count == 0
         ):
