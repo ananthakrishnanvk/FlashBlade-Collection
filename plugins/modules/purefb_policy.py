@@ -899,7 +899,7 @@ def update_smb_share_policy(module, blade):
         if current_policy_rule.status_code != 200:
             module.fail_json(
                 msg="Failed to get SMB export policy rules for {0}. Error: {1}".format(
-                i    module.params["name"],
+                    module.params["name"],
                     current_policy_rule.errors[0].message,
                     )
                 )
