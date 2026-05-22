@@ -119,7 +119,7 @@ try:
         Saml2SsoPost,
         Saml2SsoSp,
         Saml2SsoIdp,
-        ReferenceWriteable,
+        ReferenceWritable,
     )
 except ImportError:
     HAS_PYPURECLIENT = False
@@ -254,9 +254,9 @@ def update_saml(module, blade):
         signing = None
         if not module.check_mode:
             if new_idp["sp_decrypt_cred"]:
-                decrypt = ReferenceWriteable(name=new_idp["sp_decrypt_cred"])
+                decrypt = ReferenceWritable(name=new_idp["sp_decrypt_cred"])
             if new_idp["sp_sign_cred"]:
-                decrypt = ReferenceWriteable(name=new_idp["sp_sign_cred"])
+                decrypt = ReferenceWritable(name=new_idp["sp_sign_cred"])
             sp = Saml2SsoSp(
                 decryption_credential=decrypt,
                 signing_credential=signing,
@@ -294,9 +294,9 @@ def create_saml(module, blade):
     signing = None
     if not module.check_mode:
         if module.params["decryption_credential"]:
-            decrypt = ReferenceWriteable(name=module.params["decryption_credential"])
+            decrypt = ReferenceWritable(name=module.params["decryption_credential"])
         if module.params["signing_credential"]:
-            signing = ReferenceWriteable(name=module.params["signing_credential"])
+            signing = ReferenceWritable(name=module.params["signing_credential"])
         sp = Saml2SsoSp(
             decryption_credential=decrypt,
             signing_credential=signing,
