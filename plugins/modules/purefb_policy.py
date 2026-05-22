@@ -901,8 +901,8 @@ def update_smb_share_policy(module, blade):
                 msg="Failed to get SMB export policy rules for {0}. Error: {1}".format(
                     module.params["name"],
                     current_policy_rule.errors[0].message,
-                    )
                 )
+            )
         elif (
             current_policy_rule.status_code == 200
             and current_policy_rule.total_item_count == 0
