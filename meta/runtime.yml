@@ -55,5 +55,5 @@ action_groups:
    - purefb_tz
    - purefb_user
    - purefb_userpolicy
-purefb_userquota.py
-purefb_virtualhost.py
+   - purefb_userquota
+   - purefb_virtualhost
