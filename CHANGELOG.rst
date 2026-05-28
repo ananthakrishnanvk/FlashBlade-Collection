@@ -4,6 +4,14 @@ Purestorage.Flashblade Release Notes
 
 .. contents:: Topics
 
+v1.25.1
+=======
+
+Bugfixes
+--------
+
+- purefb_info - Fixed bucket AttributeError
+
 v1.25.0
 =======
 
