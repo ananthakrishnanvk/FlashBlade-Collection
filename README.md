@@ -1,5 +1,5 @@
 <a href="https://github.com/Everpure-Ansible/FlashBlade-Collection/releases/latest"><img src="https://img.shields.io/github/v/tag/Everpure-Ansible/FlashBlade-Collection?label=release">
-<a href="COPYING.GPLv3"><img src="https://img.shields.io/badge/license-GPL%20v3.0-brightgreen.svg"></a>
+<a href="https://github.com/Pure-Storage-Ansible/FlashBlade-Collection/blob/master/COPYING.GPLv3"><img src="https://img.shields.io/badge/license-GPL%20v3.0-brightgreen.svg"></a>
 <img src="https://cla-assistant.io/readme/badge/Everpure-Ansible/FlashBlade-Collection">
 <img src="https://github.com/Everpure-Ansible/FLashBlade-Collection/workflows/Everpure%20Ansible%20CI/badge.svg">
 <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
@@ -78,7 +78,7 @@ There are many ways in which you can participate in the project, for example:
 
 Only the latest release of this collection is supported.
 
-For support please raise a GitHub Issue on this repository.
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/) or please raise a [GitHub issue](https://github.com/Everpure-Ansible/FlashBlade-Collection/issues) in the Collection repo.
 
 If you are a Everpure customer, you may log a support call with the Everpure Support team ([support\@purestorage.com](mailto:support@purestorage.com?subject=FlashBlade-Ansible-Collection))
 
