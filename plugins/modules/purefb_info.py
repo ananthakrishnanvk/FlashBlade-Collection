@@ -816,8 +816,8 @@ def generate_bucket_dict(blade):
     bucket_info = {}
     buckets = list(blade.get_buckets().items)
     for bucket in buckets:
-        bucket = bucket.name
-        bucket_info[bucket] = {
+        bucket_name = bucket.name
+        bucket_info[bucket_name] = {
             "versioning": bucket.versioning,
             "bucket_type": getattr(bucket, "bucket_type", None),
             "object_count": bucket.object_count,
