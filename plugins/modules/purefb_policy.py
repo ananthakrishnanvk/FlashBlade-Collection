@@ -3940,21 +3940,36 @@ def main():
     state = module.params["state"]
     blade = get_system(module)
     versions = list(blade.get_versions().items)
+    if CONTEXT_API_VERSION in versions and not module.params["context"]:
+        # If no context is provided set the context to the local array name
+        module.params["context"] = list(blade.get_arrays().items)[0].name
     if module.params["policy_type"] == "access":
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_object_store_access_policies(
-                    names=[module.params["account"] + "/" + module.params["name"]]
-                ).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_object_store_access_policies(
+                        names=[module.params["account"] + "/" + module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_object_store_access_policies(
+                        names=[module.params["account"] + "/" + module.params["name"]]
+                    ).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["user"]:
             member_name = module.params["account"] + "/" + module.params["user"]
-            res = blade.get_object_store_users(names=[member_name])
+            if CONTEXT_API_VERSION in versions:
+                res = blade.get_object_store_users(
+                    names=[member_name], context_names=[module.params["context"]]
+                )
+            else:
+                res = blade.get_object_store_users(names=[member_name])
             if res.status_code != 200:
                 module.fail_json(
                     msg="User {0} does not exist in account {1}. Error: {2}".format(
@@ -3974,12 +3989,16 @@ def main():
                 module.fail_json(
                     msg='Incorrect format for target policy. Must be "<account>/<name>"'
                 )
-            if (
-                blade.get_object_store_access_policies(
+            if CONTEXT_API_VERSION in versions:
+                res = blade.get_object_store_access_policies(
+                    names=[module.params["target"]],
+                    context_names=[module.params["context"]],
+                )
+            else:
+                res = blade.get_object_store_access_policies(
                     names=[module.params["target"]]
-                ).status_code
-                != 200
-            ):
+                )
+            if res.status_code != 200:
                 module.fail_json(
                     msg="Target policy {0} does not exist".format(
                         module.params["target"]
@@ -3998,28 +4017,58 @@ def main():
             )
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_nfs_export_policies(names=[module.params["name"]]).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_nfs_export_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_nfs_export_policies(names=[module.params["name"]]).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["rename"]:
             try:
-                new_policy = list(
-                    blade.get_nfs_export_policies(names=[module.params["rename"]]).items
-                )[0]
+                if CONTEXT_API_VERSION in versions:
+                    new_policy = list(
+                        blade.get_nfs_export_policies(
+                            names=[module.params["rename"]],
+                            context_names=[module.params["context"]],
+                        ).items
+                    )[0]
+                else:
+                    new_policy = list(
+                        blade.get_nfs_export_policies(
+                            names=[module.params["rename"]]
+                        ).items
+                    )[0]
             except AttributeError:
                 new_policy = None
         if policy and state == "present" and not module.params["rename"]:
             if module.params["before_rule"]:
-                res = blade.get_nfs_export_policies_rules(
-                    policy_names=[module.params["name"]],
-                    names=[
-                        module.params["name"] + "." + str(module.params["before_rule"])
-                    ],
-                )
+                if CONTEXT_API_VERSION in versions:
+                    res = blade.get_nfs_export_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.get_nfs_export_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                    )
                 if res.status_code != 200:
                     module.fail_json(
                         msg="Rule index {0} does not exist.".format(
@@ -4046,28 +4095,58 @@ def main():
             )
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_smb_client_policies(names=[module.params["name"]]).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_smb_client_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_smb_client_policies(names=[module.params["name"]]).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["rename"]:
             try:
-                new_policy = list(
-                    blade.get_smb_client_policies(names=[module.params["rename"]]).items
-                )[0]
+                if CONTEXT_API_VERSION in versions:
+                    new_policy = list(
+                        blade.get_smb_client_policies(
+                            names=[module.params["rename"]],
+                            context_names=[module.params["context"]],
+                        ).items
+                    )[0]
+                else:
+                    new_policy = list(
+                        blade.get_smb_client_policies(
+                            names=[module.params["rename"]]
+                        ).items
+                    )[0]
             except AttributeError:
                 new_policy = None
         if policy and state == "present" and not module.params["rename"]:
             if module.params["before_rule"]:
-                res = blade.get_smb_client_policies_rules(
-                    policy_names=[module.params["name"]],
-                    names=[
-                        module.params["name"] + "." + str(module.params["before_rule"])
-                    ],
-                )
+                if CONTEXT_API_VERSION in versions:
+                    res = blade.get_smb_client_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.get_smb_client_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                    )
                 if res.status_code != 200:
                     module.fail_json(
                         msg="Rule index {0} does not exist.".format(
@@ -4094,28 +4173,58 @@ def main():
             )
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_smb_share_policies(names=[module.params["name"]]).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_smb_share_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_smb_share_policies(names=[module.params["name"]]).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["rename"]:
             try:
-                new_policy = list(
-                    blade.get_smb_share_policies(names=[module.params["rename"]]).items
-                )[0]
+                if CONTEXT_API_VERSION in versions:
+                    new_policy = list(
+                        blade.get_smb_share_policies(
+                            names=[module.params["rename"]],
+                            context_names=[module.params["context"]],
+                        ).items
+                    )[0]
+                else:
+                    new_policy = list(
+                        blade.get_smb_share_policies(
+                            names=[module.params["rename"]]
+                        ).items
+                    )[0]
             except AttributeError:
                 new_policy = None
         if policy and state == "present" and not module.params["rename"]:
             if module.params["before_rule"]:
-                res = blade.get_smb_share_policies_rules(
-                    policy_names=[module.params["name"]],
-                    names=[
-                        module.params["name"] + "." + str(module.params["before_rule"])
-                    ],
-                )
+                if CONTEXT_API_VERSION in versions:
+                    res = blade.get_smb_share_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.get_smb_share_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                    )
                 if res.status_code != 200:
                     module.fail_json(
                         msg="Rule index {0} does not exist.".format(
@@ -4142,30 +4251,60 @@ def main():
             )
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_network_access_policies(names=[module.params["name"]]).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_network_access_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_network_access_policies(
+                        names=[module.params["name"]]
+                    ).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["rename"]:
             try:
-                new_policy = list(
-                    blade.get_network_access_policies(
-                        names=[module.params["rename"]]
-                    ).items
-                )[0]
+                if CONTEXT_API_VERSION in versions:
+                    new_policy = list(
+                        blade.get_network_access_policies(
+                            names=[module.params["rename"]],
+                            context_names=[module.params["context"]],
+                        ).items
+                    )[0]
+                else:
+                    new_policy = list(
+                        blade.get_network_access_policies(
+                            names=[module.params["rename"]]
+                        ).items
+                    )[0]
             except AttributeError:
                 new_policy = None
         if policy and state == "present" and not module.params["rename"]:
             if module.params["before_rule"]:
-                res = blade.get_network_access_policies_rules(
-                    policy_names=[module.params["name"]],
-                    names=[
-                        module.params["name"] + "." + str(module.params["before_rule"])
-                    ],
-                )
+                if CONTEXT_API_VERSION in versions:
+                    res = blade.get_network_access_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.get_network_access_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                    )
                 if res.status_code != 200:
                     module.fail_json(
                         msg="Rule index {0} does not exist.".format(
@@ -4192,28 +4331,58 @@ def main():
             )
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(
-                blade.get_worm_data_policies(names=[module.params["name"]]).items
-            )[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_worm_data_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(
+                    blade.get_worm_data_policies(names=[module.params["name"]]).items
+                )[0]
         except AttributeError:
             policy = None
         if module.params["rename"]:
             try:
-                new_policy = list(
-                    blade.get_worm_data_policies(names=[module.params["rename"]]).items
-                )[0]
+                if CONTEXT_API_VERSION in versions:
+                    new_policy = list(
+                        blade.get_worm_data_policies(
+                            names=[module.params["rename"]],
+                            context_names=[module.params["context"]],
+                        ).items
+                    )[0]
+                else:
+                    new_policy = list(
+                        blade.get_worm_data_policies(
+                            names=[module.params["rename"]]
+                        ).items
+                    )[0]
             except AttributeError:
                 new_policy = None
         if policy and state == "present" and not module.params["rename"]:
             if module.params["before_rule"]:
-                res = blade.get_worm_data_policies_rules(
-                    policy_names=[module.params["name"]],
-                    names=[
-                        module.params["name"] + "." + str(module.params["before_rule"])
-                    ],
-                )
+                if CONTEXT_API_VERSION in versions:
+                    res = blade.get_worm_data_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.get_worm_data_policies_rules(
+                        policy_names=[module.params["name"]],
+                        names=[
+                            module.params["name"]
+                            + "."
+                            + str(module.params["before_rule"])
+                        ],
+                    )
                 if res.status_code != 200:
                     module.fail_json(
                         msg="Rule index {0} does not exist.".format(
@@ -4232,9 +4401,18 @@ def main():
     else:
         if not HAS_PYPURECLIENT:
             module.fail_json(msg="py-pure-client sdk is required for this module")
-        blade = get_system(module)
         try:
-            policy = list(blade.get_policies(names=[module.params["name"]]).items)[0]
+            if CONTEXT_API_VERSION in versions:
+                policy = list(
+                    blade.get_policies(
+                        names=[module.params["name"]],
+                        context_names=[module.params["context"]],
+                    ).items
+                )[0]
+            else:
+                policy = list(blade.get_policies(names=[module.params["name"]]).items)[
+                    0
+                ]
         except AttributeError:
             policy = None
         if not policy and state == "present":
