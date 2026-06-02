@@ -1418,18 +1418,28 @@ def update_smb_client_policy(module, blade):
         if CONTEXT_API_VERSION in versions:
             current_policy_rule = blade.get_smb_client_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
                 context_names=[module.params["context"]],
             )
         else:
             current_policy_rule = blade.get_smb_client_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
             )
-        if (
-            current_policy_rule.status_code == 200
-            and current_policy_rule.total_item_count == 0
-        ):
+        if current_policy_rule.status_code != 200:
+            module.fail_json(
+                msg="Failed to get SMB client policy rules for {0}. Error: {1}".format(
+                    module.params["name"],
+                    get_error_message(current_policy_rule),
+                )
+            )
+        # Match the requested client locally rather than using a server-side
+        # filter, which on some Purity//FB versions returns an error instead
+        # of an empty result set when no matching rule exists.
+        matching_rules = [
+            rule
+            for rule in list(current_policy_rule.items)
+            if rule.client == module.params["client"]
+        ]
+        if not matching_rules:
             if SMB_ENCRYPT_API_VERSION in versions:
                 rule = SmbClientPolicyRule(
                     client=module.params["client"],
@@ -1484,7 +1494,7 @@ def update_smb_client_policy(module, blade):
                         )
                     )
         else:
-            rules = list(current_policy_rule.items)
+            rules = matching_rules
             cli_count = None
             done = False
             if module.params["client"] == "*":
@@ -1804,25 +1814,28 @@ def update_network_access_policy(module, blade):
         if CONTEXT_API_VERSION in versions:
             current_policy_rule = blade.get_network_access_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
                 context_names=[module.params["context"]],
             )
         else:
             current_policy_rule = blade.get_network_access_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
             )
         if current_policy_rule.status_code != 200:
             module.fail_json(
                 msg="Failed to get network access policy rules for {0}. Error: {1}".format(
                     module.params["name"],
-                    current_policy_rule.errors[0].message,
+                    get_error_message(current_policy_rule),
                 )
             )
-        elif (
-            current_policy_rule.status_code == 200
-            and current_policy_rule.total_item_count == 0
-        ):
+        # Match the requested client locally rather than using a server-side
+        # filter, which on some Purity//FB versions returns an error instead
+        # of an empty result set when no matching rule exists.
+        matching_rules = [
+            rule
+            for rule in list(current_policy_rule.items)
+            if rule.client == module.params["client"]
+        ]
+        if not matching_rules:
             rule = NetworkAccessPolicyRule(
                 client=module.params["client"],
                 effect=module.params["effect"],
@@ -1869,7 +1882,7 @@ def update_network_access_policy(module, blade):
                         )
                     )
         else:
-            rules = list(current_policy_rule.items)
+            rules = matching_rules
             cli_count = None
             done = False
             if module.params["client"] == "*":
@@ -2339,25 +2352,28 @@ def update_nfs_policy(module, blade):
         if CONTEXT_API_VERSION in versions:
             current_policy_rule = blade.get_nfs_export_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
                 context_names=[module.params["context"]],
             )
         else:
             current_policy_rule = blade.get_nfs_export_policies_rules(
                 policy_names=[module.params["name"]],
-                filter="client='" + module.params["client"] + "'",
             )
         if current_policy_rule.status_code != 200:
             module.fail_json(
                 msg="Failed to get NFS export policy rules for {0}. Error: {1}".format(
                     module.params["name"],
-                    current_policy_rule.errors[0].message,
+                    get_error_message(current_policy_rule),
                 )
             )
-        elif (
-            current_policy_rule.status_code == 200
-            and current_policy_rule.total_item_count == 0
-        ):
+        # Match the requested client locally rather than using a server-side
+        # filter, which on some Purity//FB versions returns an error instead
+        # of an empty result set when no matching rule exists.
+        matching_rules = [
+            rule
+            for rule in list(current_policy_rule.items)
+            if rule.client == module.params["client"]
+        ]
+        if not matching_rules:
             rule = NfsExportPolicyRule(
                 client=module.params["client"],
                 permission=module.params["permission"],
@@ -2410,7 +2426,7 @@ def update_nfs_policy(module, blade):
                         )
                     )
         else:
-            rules = list(current_policy_rule.items)
+            rules = matching_rules
             cli_count = None
             done = False
             if module.params["client"] == "*":
