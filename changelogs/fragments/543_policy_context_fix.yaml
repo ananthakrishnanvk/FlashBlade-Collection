@@ -1,3 +1,3 @@
 bugfixes:
  - purefb_policy - Default context to the local array name so that empty context_names no longer cause errors on newer Purity//FB releases
- - purefb_policy - Match policy rules by client locally instead of using a server-side filter, which could return an error rather than an empty result set and caused failures when adding the first rule for a client
+ - purefb_policy - Match policy rules by client locally instead of a server-side filter, which could error instead of returning an empty set and break adding the first rule for a client
