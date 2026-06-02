@@ -352,6 +352,10 @@ def main():
     state = module.params["state"]
     module.params["name"] = module.params["name"].lower()
     blade = get_system(module)
+    api_version = list(blade.get_versions().items)
+    if CONTEXT_API_VERSION in api_version and not module.params["context"]:
+        # If no context is provided set the context to the local array name
+        module.params["context"] = list(blade.get_arrays().items)[0].name
 
     local_bucket = get_local_bucket(module, blade)
     local_replica_link = get_local_rl(module, blade)
