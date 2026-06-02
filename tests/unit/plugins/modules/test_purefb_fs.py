@@ -224,6 +224,11 @@ class TestPurefbFs:
         mock_blade = Mock()
         mock_get_system.return_value = mock_blade
 
+        # Mock API version
+        mock_version = Mock()
+        mock_version.version = "2.0"
+        mock_blade.get_versions.return_value.items = [mock_version]
+
         # Mock existing filesystem
         mock_fs = Mock()
         mock_fs.destroyed = False
@@ -263,6 +268,11 @@ class TestPurefbFs:
 
         mock_blade = Mock()
         mock_get_system.return_value = mock_blade
+
+        # Mock API version
+        mock_version = Mock()
+        mock_version.version = "2.0"
+        mock_blade.get_versions.return_value.items = [mock_version]
 
         # Mock destroyed filesystem
         mock_fs = Mock()
@@ -480,6 +490,11 @@ class TestPurefbFs:
         mock_blade = Mock()
         mock_get_system.return_value = mock_blade
         mock_get_filesystem.return_value = None  # Filesystem doesn't exist
+
+        # Mock API version
+        mock_version = Mock()
+        mock_version.version = "2.0"
+        mock_blade.get_versions.return_value.items = [mock_version]
 
         # Call main
         main()
