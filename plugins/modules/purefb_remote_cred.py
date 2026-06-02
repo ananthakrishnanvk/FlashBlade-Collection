@@ -263,6 +263,10 @@ def main():
         module.fail_json(msg="py-pure-client sdk is required for this module")
 
     blade = get_system(module)
+    api_version = list(blade.get_versions().items)
+    if CONTEXT_API_VERSION in api_version and not module.params["context"]:
+        # If no context is provided set the context to the local array name
+        module.params["context"] = list(blade.get_arrays().items)[0].name
     target = get_connected(module, blade)
 
     if not target:

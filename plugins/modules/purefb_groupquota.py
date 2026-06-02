@@ -368,6 +368,10 @@ def main():
 
     state = module.params["state"]
     blade = get_system(module)
+    api_version = list(blade.get_versions().items)
+    if CONTEXT_API_VERSION in api_version and not module.params["context"]:
+        # If no context is provided set the context to the local array name
+        module.params["context"] = list(blade.get_arrays().items)[0].name
     fsys = get_filesystem(module, blade)
     if not fsys:
         module.fail_json(
