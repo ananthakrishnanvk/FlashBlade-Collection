@@ -339,15 +339,13 @@ def update_policy(module, blade, policy):
     changed = False
     patch_kwargs = {}
 
-    if (
-        module.params["enabled"] is not None
-        and module.params["enabled"] != getattr(policy, "enabled", None)
+    if module.params["enabled"] is not None and module.params["enabled"] != getattr(
+        policy, "enabled", None
     ):
         patch_kwargs["enabled"] = module.params["enabled"]
 
-    if (
-        module.params["rename"]
-        and module.params["rename"] != getattr(policy, "name", None)
+    if module.params["rename"] and module.params["rename"] != getattr(
+        policy, "name", None
     ):
         patch_kwargs["name"] = module.params["rename"]
 

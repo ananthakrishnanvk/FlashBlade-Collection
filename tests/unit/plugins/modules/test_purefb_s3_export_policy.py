@@ -143,9 +143,7 @@ class TestPurefbS3ExportPolicy:
         out = _get_policy(mock_module, mock_blade)
 
         assert out is not None
-        mock_blade.get_s3_export_policies.assert_called_once_with(
-            names=["test-policy"]
-        )
+        mock_blade.get_s3_export_policies.assert_called_once_with(names=["test-policy"])
 
     def test_get_policy_passes_context_when_set(self):
         """Test _get_policy forwards context_names when context is set"""

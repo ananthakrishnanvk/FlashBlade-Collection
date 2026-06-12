@@ -303,9 +303,7 @@ class TestPurefbS3accExport:
             pass
 
         mock_module.fail_json.assert_called_once()
-        assert (
-            "policy is required" in mock_module.fail_json.call_args[1]["msg"]
-        )
+        assert "policy is required" in mock_module.fail_json.call_args[1]["msg"]
 
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPost")

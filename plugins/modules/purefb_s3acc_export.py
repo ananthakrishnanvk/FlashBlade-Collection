@@ -169,9 +169,7 @@ def delete_export(module, blade, export):
 def create_export(module, blade):
     """Create a new account export."""
     if not module.params["policy"]:
-        module.fail_json(
-            msg="policy is required when creating a new account export."
-        )
+        module.fail_json(msg="policy is required when creating a new account export.")
     changed = True
     post_kwargs = {"server": Reference(name=module.params["server"])}
     if module.params["enabled"] is not None:
@@ -199,9 +197,8 @@ def update_export(module, blade, export):
     changed = False
     patch_kwargs = {}
 
-    if (
-        module.params["enabled"] is not None
-        and module.params["enabled"] != getattr(export, "enabled", None)
+    if module.params["enabled"] is not None and module.params["enabled"] != getattr(
+        export, "enabled", None
     ):
         patch_kwargs["export_enabled"] = module.params["enabled"]
 
