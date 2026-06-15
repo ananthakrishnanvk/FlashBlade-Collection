@@ -1,2 +1,0 @@
-minor_changes:
- - purefb_s3_export_policy - Add new module to manage S3 export policies and their rules (requires Purity//FB 4.6.3+ / REST API 2.20+)

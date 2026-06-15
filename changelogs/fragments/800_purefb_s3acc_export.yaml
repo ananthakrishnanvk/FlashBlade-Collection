@@ -1,2 +1,0 @@
-minor_changes:
- - purefb_s3acc_export - Add new module to manage S3 object-store account exports (requires Purity//FB 4.6.3+ / REST API 2.20+)
