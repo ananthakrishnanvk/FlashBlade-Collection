@@ -123,6 +123,9 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb impo
 from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
+from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+    LooseVersion,
+)
 
 MIN_REQUIRED_API_VERSION = "2.20"
 
@@ -249,11 +252,15 @@ def main():
 
     blade = get_system(module)
     api_version = list(blade.get_versions().items)
-    if MIN_REQUIRED_API_VERSION not in api_version:
+    if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(api_version):
         module.fail_json(
             msg="FlashBlade REST version not supported. "
             "Minimum version required: {0}".format(MIN_REQUIRED_API_VERSION)
         )
+
+    if not module.params["context"]:
+        # If no context is provided set the context to the local array name
+        module.params["context"] = list(blade.get_arrays().items)[0].name
 
     state = module.params["state"]
     export = _get_export(module, blade)

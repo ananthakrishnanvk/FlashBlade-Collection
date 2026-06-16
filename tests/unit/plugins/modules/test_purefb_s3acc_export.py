@@ -66,6 +66,9 @@ sys.modules[
 sys.modules[
     "ansible_collections.purestorage.flashblade.plugins.module_utils.common"
 ] = MagicMock()
+sys.modules[
+    "ansible_collections.purestorage.flashblade.plugins.module_utils.version"
+] = MagicMock()
 
 from plugins.modules.purefb_s3acc_export import (
     main,
@@ -168,6 +171,7 @@ class TestPurefbS3accExport:
 
     # ---------------- main() create flows ----------------
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPost")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -179,8 +183,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_post_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test creating a new account export"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -197,6 +203,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Export does not exist
@@ -223,6 +232,7 @@ class TestPurefbS3accExport:
         mock_module.exit_json.assert_called_once()
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPost")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -234,8 +244,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_post_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test create reports changed but skips POST in check mode"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -252,6 +264,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         get_response = Mock()
@@ -267,13 +282,15 @@ class TestPurefbS3accExport:
         mock_blade.post_object_store_account_exports.assert_not_called()
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_create_without_policy_fails(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test create fails when policy is not supplied"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -290,6 +307,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         get_response = Mock()
@@ -305,6 +325,7 @@ class TestPurefbS3accExport:
         mock_module.fail_json.assert_called_once()
         assert "policy is required" in mock_module.fail_json.call_args[1]["msg"]
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPost")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -316,8 +337,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_post_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test SDK error on create is surfaced via fail_json"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -334,6 +357,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         get_response = Mock()
@@ -361,6 +387,7 @@ class TestPurefbS3accExport:
 
     # ---------------- main() update flows ----------------
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPatch")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -372,8 +399,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_patch_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test updating the enabled flag on an existing export"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -390,6 +419,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -417,6 +449,7 @@ class TestPurefbS3accExport:
         assert call_kwargs["names"] == ["acme/fb-01"]
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPatch")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -428,8 +461,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_patch_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test re-pointing an export at a different policy"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -446,6 +481,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -471,13 +509,15 @@ class TestPurefbS3accExport:
         mock_blade.patch_object_store_account_exports.assert_called_once()
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_update_idempotent_when_matches(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test update is a no-op when desired state already matches"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -494,6 +534,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -515,6 +558,7 @@ class TestPurefbS3accExport:
         mock_blade.patch_object_store_account_exports.assert_not_called()
         assert mock_module.exit_json.call_args[1]["changed"] is False
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.Reference")
     @patch("plugins.modules.purefb_s3acc_export.ObjectStoreAccountExportPatch")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
@@ -526,8 +570,10 @@ class TestPurefbS3accExport:
         mock_get_system,
         mock_patch_cls,
         mock_reference_cls,
+        mock_loose_version,
     ):
         """Test SDK error on update is surfaced via fail_json"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -544,6 +590,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -577,11 +626,15 @@ class TestPurefbS3accExport:
 
     # ---------------- main() delete flows ----------------
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
-    def test_main_deletes_export(self, mock_ansible_module, mock_get_system):
+    def test_main_deletes_export(
+        self, mock_ansible_module, mock_get_system, mock_loose_version
+    ):
         """Test deleting an existing export"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -598,6 +651,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -617,18 +673,20 @@ class TestPurefbS3accExport:
         except SystemExit:
             pass
 
-        mock_blade.delete_object_store_account_exports.assert_called_once_with(
-            names=["acme/fb-01"]
-        )
+        mock_blade.delete_object_store_account_exports.assert_called_once()
+        call_kwargs = mock_blade.delete_object_store_account_exports.call_args[1]
+        assert call_kwargs["names"] == ["acme/fb-01"]
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_delete_idempotent_when_absent(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test delete is a no-op when the export does not exist"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -645,6 +703,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         get_response = Mock()
@@ -660,13 +721,15 @@ class TestPurefbS3accExport:
         mock_blade.delete_object_store_account_exports.assert_not_called()
         assert mock_module.exit_json.call_args[1]["changed"] is False
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_delete_check_mode_skips_delete(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test delete reports changed but skips DELETE in check mode"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -683,6 +746,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -701,13 +767,15 @@ class TestPurefbS3accExport:
         mock_blade.delete_object_store_account_exports.assert_not_called()
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_delete_failure_calls_fail_json(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test SDK error on delete is surfaced via fail_json"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)
@@ -724,6 +792,9 @@ class TestPurefbS3accExport:
 
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         existing_export = Mock()
@@ -754,13 +825,15 @@ class TestPurefbS3accExport:
 
     # ---------------- main() version gating ----------------
 
+    @patch("plugins.modules.purefb_s3acc_export.LooseVersion")
     @patch("plugins.modules.purefb_s3acc_export.get_system")
     @patch("plugins.modules.purefb_s3acc_export.AnsibleModule")
     @patch("plugins.modules.purefb_s3acc_export.HAS_PYPURECLIENT", True)
     def test_main_fails_when_api_version_too_old(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test failure when API version is too old"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=True)
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
         mock_module.fail_json = Mock(side_effect=SystemExit)

@@ -66,6 +66,9 @@ sys.modules[
 sys.modules[
     "ansible_collections.purestorage.flashblade.plugins.module_utils.common"
 ] = MagicMock()
+sys.modules[
+    "ansible_collections.purestorage.flashblade.plugins.module_utils.version"
+] = MagicMock()
 
 from plugins.modules.purefb_s3_export_policy import (
     main,
@@ -391,14 +394,20 @@ class TestPurefbS3ExportPolicy:
 
     # ---------------- main() flows ----------------
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.S3ExportPolicyPost")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_creates_policy(
-        self, mock_ansible_module, mock_get_system, mock_policy_post
+        self,
+        mock_ansible_module,
+        mock_get_system,
+        mock_policy_post,
+        mock_loose_version,
     ):
         """Test creating a new S3 export policy"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -417,6 +426,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Policy does not exist
@@ -445,14 +457,20 @@ class TestPurefbS3ExportPolicy:
         mock_module.exit_json.assert_called_once()
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.S3ExportPolicyPost")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_create_check_mode_skips_post(
-        self, mock_ansible_module, mock_get_system, mock_policy_post
+        self,
+        mock_ansible_module,
+        mock_get_system,
+        mock_policy_post,
+        mock_loose_version,
     ):
         """Test create reports changed but skips POST in check mode"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -471,6 +489,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Policy does not exist
@@ -491,14 +512,20 @@ class TestPurefbS3ExportPolicy:
         # Verify exit_json was called with changed=True
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.S3ExportPolicyPatch")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_updates_enabled_flag(
-        self, mock_ansible_module, mock_get_system, mock_patch_cls
+        self,
+        mock_ansible_module,
+        mock_get_system,
+        mock_patch_cls,
+        mock_loose_version,
     ):
         """Test updating the enabled flag on an existing policy"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -517,6 +544,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Existing policy with enabled=True
@@ -546,13 +576,15 @@ class TestPurefbS3ExportPolicy:
         # Verify exit_json was called with changed=True
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_update_idempotent_when_enabled_matches(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test update is a no-op when desired enabled already matches"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -571,6 +603,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Existing policy already has enabled=True
@@ -595,14 +630,20 @@ class TestPurefbS3ExportPolicy:
         # Verify exit_json was called with changed=False
         assert mock_module.exit_json.call_args[1]["changed"] is False
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.S3ExportPolicyPatch")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_renames_policy(
-        self, mock_ansible_module, mock_get_system, mock_patch_cls
+        self,
+        mock_ansible_module,
+        mock_get_system,
+        mock_patch_cls,
+        mock_loose_version,
     ):
         """Test renaming an existing policy"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -621,6 +662,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Existing policy
@@ -650,11 +694,15 @@ class TestPurefbS3ExportPolicy:
         # Verify exit_json was called with changed=True
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
-    def test_main_deletes_policy(self, mock_ansible_module, mock_get_system):
+    def test_main_deletes_policy(
+        self, mock_ansible_module, mock_get_system, mock_loose_version
+    ):
         """Test deleting an existing policy"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -673,6 +721,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Existing policy
@@ -697,20 +748,22 @@ class TestPurefbS3ExportPolicy:
             pass
 
         # Verify delete_s3_export_policies was called
-        mock_blade.delete_s3_export_policies.assert_called_once_with(
-            names=["test-policy"]
-        )
+        mock_blade.delete_s3_export_policies.assert_called_once()
+        call_kwargs = mock_blade.delete_s3_export_policies.call_args[1]
+        assert call_kwargs["names"] == ["test-policy"]
 
         # Verify exit_json was called with changed=True
         assert mock_module.exit_json.call_args[1]["changed"] is True
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_delete_idempotent_when_absent(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test delete is a no-op when the policy does not exist"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -729,6 +782,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Policy does not exist
@@ -749,13 +805,15 @@ class TestPurefbS3ExportPolicy:
         # Verify exit_json was called with changed=False
         assert mock_module.exit_json.call_args[1]["changed"] is False
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_fails_when_api_version_too_old(
-        self, mock_ansible_module, mock_get_system
+        self, mock_ansible_module, mock_get_system, mock_loose_version
     ):
         """Test failure when API version is too old"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=True)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -789,14 +847,20 @@ class TestPurefbS3ExportPolicy:
             in mock_module.fail_json.call_args[1]["msg"]
         )
 
+    @patch("plugins.modules.purefb_s3_export_policy.LooseVersion")
     @patch("plugins.modules.purefb_s3_export_policy.S3ExportPolicyPost")
     @patch("plugins.modules.purefb_s3_export_policy.get_system")
     @patch("plugins.modules.purefb_s3_export_policy.AnsibleModule")
     @patch("plugins.modules.purefb_s3_export_policy.HAS_PYPURECLIENT", True)
     def test_main_create_failure_calls_fail_json(
-        self, mock_ansible_module, mock_get_system, mock_post_cls
+        self,
+        mock_ansible_module,
+        mock_get_system,
+        mock_post_cls,
+        mock_loose_version,
     ):
         """Test SDK error on create is surfaced via fail_json"""
+        mock_loose_version.return_value.__gt__ = Mock(return_value=False)
         # Setup mock module
         mock_module = Mock()
         mock_module.exit_json = Mock(side_effect=SystemExit)
@@ -815,6 +879,9 @@ class TestPurefbS3ExportPolicy:
         # Mock blade
         mock_blade = Mock()
         mock_blade.get_versions.return_value.items = ["2.20"]
+        local_array = Mock()
+        local_array.name = "local-array"
+        mock_blade.get_arrays.return_value.items = [local_array]
         mock_get_system.return_value = mock_blade
 
         # Policy does not exist
