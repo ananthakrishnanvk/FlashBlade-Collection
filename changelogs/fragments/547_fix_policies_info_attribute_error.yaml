@@ -1,0 +1,2 @@
+bugfixes:
+ - purefb_info - Fix AttributeError in `generate_policies_dict` where the loop variable was overwritten with `policy.name`, causing `gather_subset=policies` (or `all`) to crash on any array with existing policies (#547)

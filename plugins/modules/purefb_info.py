@@ -795,15 +795,15 @@ def generate_policies_dict(blade):
     policies_info = {}
     policies = list(blade.get_policies_all().items)
     for policy in policies:
-        policy = policy.name
-        policies_info[policy] = {
+        policy_name = policy.name
+        policies_info[policy_name] = {
             "enabled": policy.enabled,
             "retention_lock": getattr(policy, "retention_lock", None),
             "policy_type": policy.policy_type,
             "rules": {},
         }
         if policy.rules:
-            policies_info[policy]["rules"] = {
+            policies_info[policy_name]["rules"] = {
                 "at": getattr(policy.rules[0], "at", None),
                 "every": getattr(policy.rules[0], "every", None),
                 "keep_for": getattr(policy.rules[0], "keep_for", None),
