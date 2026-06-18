@@ -63,8 +63,12 @@ options:
     default: true
   nfs_rules:
     description:
-      - No longer valid
-      - Superceeded by I(export_policy)
+      - Define the NFS client export rules for the filesystem, for example
+        C(10.21.200.0/24(rw,no_root_squash)).
+      - Deprecated. Use I(export_policy) instead. This parameter will be
+        removed in 2.0.0.
+      - Only honoured when explicitly set, and only for non-realm
+        filesystems. It is ignored for filesystems in a realm.
     required: false
     type: str
   smb:
@@ -425,16 +429,34 @@ def create_fs(module, blade):
         elif "::" in module.params["name"]:
             realm_name = module.params["name"].split("::")[0]
 
+        # nfs_rules is deprecated in favour of export_policy. It is still
+        # honoured for non-realm filesystems for backwards compatibility, but
+        # only when explicitly supplied.
+        nfs_kwargs = {
+            "v3_enabled": module.params["nfsv3"],
+            "v4_1_enabled": module.params["nfsv4"],
+        }
+        if module.params["nfs_rules"] is not None:
+            module.deprecate(
+                "nfs_rules is deprecated. Use export_policy instead.",
+                version="2.0.0",
+                collection_name="purestorage.flashblade",
+            )
+            if realm_name:
+                module.warn(
+                    "nfs_rules is not supported for realm filesystems and "
+                    "will be ignored."
+                )
+            else:
+                nfs_kwargs["rules"] = module.params["nfs_rules"]
+
         # Build FileSystemPost object
         fs_obj = FileSystemPost(
             provisioned=size,
             fast_remove_directory_enabled=module.params["fastremove"],
             hard_limit_enabled=module.params["hard_limit"],
             snapshot_directory_enabled=module.params["snapshot"],
-            nfs=Nfs(
-                v3_enabled=module.params["nfsv3"],
-                v4_1_enabled=module.params["nfsv4"],
-            ),
+            nfs=Nfs(**nfs_kwargs),
             smb=SmbPost(enabled=module.params["smb"]),
             http=Http(enabled=module.params["http"]),
             multi_protocol=MultiProtocolPost(
@@ -648,6 +670,7 @@ def modify_fs(module, blade):
     change_ca = False
     change_go = False
     change_sc = False
+    change_rules = False
     mod_fs = False
     # Determine if this is a realm filesystem
     realm_name = None
@@ -971,6 +994,41 @@ def modify_fs(module, blade):
                         get_error_message(res),
                     )
                 )
+    if module.params["nfs_rules"] is not None:
+        module.deprecate(
+            "nfs_rules is deprecated. Use export_policy instead.",
+            version="2.0.0",
+            collection_name="purestorage.flashblade",
+        )
+        if realm_name:
+            module.warn(
+                "nfs_rules is not supported for realm filesystems and "
+                "will be ignored."
+            )
+        elif getattr(current_fs.nfs, "rules", None) != module.params["nfs_rules"]:
+            change_rules = True
+            if not module.check_mode:
+                rules_attr = FileSystemPatch(
+                    nfs=NfsPatch(rules=module.params["nfs_rules"])
+                )
+                if CONTEXT_API_VERSION in api_version:
+                    res = blade.patch_file_systems(
+                        names=[fs_name],
+                        file_system=rules_attr,
+                        context_names=[module.params["context"]],
+                    )
+                else:
+                    res = blade.patch_file_systems(
+                        names=[fs_name], file_system=rules_attr
+                    )
+                if res.status_code != 200:
+                    module.fail_json(
+                        msg="Failed to modify nfs_rules for "
+                        "filesystem {0}. Error: {1}".format(
+                            fs_name,
+                            get_error_message(res),
+                        )
+                    )
     if (
         SMB_POLICY_API_VERSION in api_version
         and module.params["client_policy"]
@@ -1111,6 +1169,7 @@ def modify_fs(module, blade):
             or change_go
             or change_sc
             or change_client
+            or change_rules
         )
     )
 

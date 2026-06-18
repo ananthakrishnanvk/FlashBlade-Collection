@@ -356,6 +356,76 @@ class TestPurefbFs:
         mock_blade.post_file_systems.assert_called_once()
         mock_module.exit_json.assert_called_with(changed=True)
 
+    @patch("plugins.modules.purefb_fs.FileSystemPost")
+    @patch("plugins.modules.purefb_fs.Nfs")
+    @patch("plugins.modules.purefb_fs.SmbPost")
+    @patch("plugins.modules.purefb_fs.Http")
+    @patch("plugins.modules.purefb_fs.MultiProtocolPost")
+    @patch("plugins.modules.purefb_fs.human_to_bytes")
+    @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
+    def test_create_fs_with_nfs_rules(
+        self,
+        mock_human_to_bytes,
+        mock_multi_protocol,
+        mock_http,
+        mock_smb,
+        mock_nfs,
+        mock_fs_post,
+    ):
+        """Explicit nfs_rules must reach the SDK and emit a deprecation warning"""
+        mock_module = Mock()
+        mock_module.check_mode = False
+        mock_module.params = {
+            "name": "test-fs",
+            "size": "1T",
+            "nfsv3": True,
+            "nfsv4": True,
+            "nfs_rules": "10.21.200.0/24(rw,no_root_squash)",
+            "smb": False,
+            "http": False,
+            "snapshot": False,
+            "fastremove": False,
+            "hard_limit": False,
+            "user_quota": None,
+            "group_quota": None,
+            "policy": None,
+            "access_control": "shared",
+            "safeguard_acls": True,
+            "export_policy": None,
+            "share_policy": None,
+            "client_policy": None,
+            "continuous_availability": True,
+            "context": "",
+            "storage_class": None,
+            "group_ownership": None,
+        }
+
+        mock_blade = Mock()
+        mock_version = Mock()
+        mock_version.version = "2.0"
+        mock_blade.get_versions.return_value.items = [mock_version]
+        mock_human_to_bytes.return_value = 1099511627776
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_blade.post_file_systems.return_value = mock_response
+
+        create_fs(mock_module, mock_blade)
+
+        # The inline rules must be passed through to the Nfs SDK object
+        mock_nfs.assert_called_once_with(
+            v3_enabled=True,
+            v4_1_enabled=True,
+            rules="10.21.200.0/24(rw,no_root_squash)",
+        )
+        # And the deprecation notice must be emitted
+        mock_module.deprecate.assert_any_call(
+            "nfs_rules is deprecated. Use export_policy instead.",
+            version="2.0.0",
+            collection_name="purestorage.flashblade",
+        )
+        mock_blade.post_file_systems.assert_called_once()
+        mock_module.exit_json.assert_called_with(changed=True)
+
     @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
     def test_create_fs_check_mode(self):
         """Test creating filesystem in check mode"""
@@ -749,7 +819,7 @@ class TestPurefbFs:
             "size": "1T",
             "nfsv3": True,
             "nfsv4": True,
-            "nfs_rules": "*(rw,no_root_squash)",
+            "nfs_rules": None,
             "smb": False,
             "http": False,
             "snapshot": False,
