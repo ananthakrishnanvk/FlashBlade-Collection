@@ -83,10 +83,23 @@ def get_system(module):
     Environment Variables:
         PUREFB_URL: FlashBlade URL (alternative to fb_url parameter)
         PUREFB_API: API token (alternative to api_token parameter)
+        PUREFB_ID_TOKEN: Pre-signed JWT (alternative to id_token parameter)
+        PUREFB_PRIVATE_KEY_FILE / PUREFB_PRIVATE_KEY_PASSWORD
+        PUREFB_USERNAME / PUREFB_CLIENT_ID / PUREFB_KEY_ID / PUREFB_ISSUER
 
     Note:
         Module parameters take precedence over environment variables.
+        Three mutually-exclusive authentication modes are supported:
+          1. api_token - static API token (default, backwards compatible).
+          2. id_token - a pre-signed JWT, exchanged by the array for an
+             access token at /oauth2/1.0/token.
+          3. private_key_file with client_id, key_id, issuer and username -
+             the SDK signs the JWT locally before exchange.
+        Modes 2 and 3 require a matching API Client registered on the array
+        (see the purefb_apiclient module).
     """
+    if not HAS_PYPURECLIENT:
+        module.fail_json(msg="pypureclient SDK not installed.")
     if module.params["disable_warnings"]:
         urllib3.disable_warnings()
     if HAS_DISTRO:
@@ -103,36 +116,53 @@ def get_system(module):
             "version": VERSION,
             "platform": platform.platform(),
         }
-    blade_name = module.params["fb_url"]
-    api = module.params["api_token"]
 
-    if HAS_PYPURECLIENT:
-        if blade_name and api:
-            system = flashblade.Client(
-                target=blade_name,
-                api_token=api,
-                user_agent=user_agent,
-            )
-        elif environ.get("PUREFB_URL") and environ.get("PUREFB_API"):
-            system = flashblade.Client(
-                target=(environ.get("PUREFB_URL")),
-                api_token=(environ.get("PUREFB_API")),
-                user_agent=user_agent,
-            )
-        else:
-            module.fail_json(
-                msg="You must set PUREFB_URL and PUREFB_API environment variables "
-                "or the fb_url and api_token module arguments"
-            )
-        res = system.get_hardware()
-        if res.status_code != 200:
-            module.fail_json(
-                msg="Pure Storage FlashBlade authentication failed. Error: {0}".format(
-                    get_error_message(res)
-                )
-            )
+    # Module parameters take precedence over the matching PUREFB_* env vars.
+    target = module.params["fb_url"] or environ.get("PUREFB_URL")
+    api = module.params["api_token"] or environ.get("PUREFB_API")
+    id_token = module.params.get("id_token") or environ.get("PUREFB_ID_TOKEN")
+    private_key_file = module.params.get("private_key_file") or environ.get(
+        "PUREFB_PRIVATE_KEY_FILE"
+    )
+    private_key_password = module.params.get("private_key_password") or environ.get(
+        "PUREFB_PRIVATE_KEY_PASSWORD"
+    )
+    username = module.params.get("username") or environ.get("PUREFB_USERNAME")
+    client_id = module.params.get("client_id") or environ.get("PUREFB_CLIENT_ID")
+    key_id = module.params.get("key_id") or environ.get("PUREFB_KEY_ID")
+    issuer = module.params.get("issuer") or environ.get("PUREFB_ISSUER")
+
+    common = {"target": target, "user_agent": user_agent}
+
+    if target and api:
+        system = flashblade.Client(api_token=api, **common)
+    elif target and id_token:
+        system = flashblade.Client(id_token=id_token, **common)
+    elif target and private_key_file and client_id and key_id and issuer and username:
+        system = flashblade.Client(
+            private_key_file=private_key_file,
+            private_key_password=private_key_password,
+            client_id=client_id,
+            key_id=key_id,
+            issuer=issuer,
+            username=username,
+            **common,
+        )
     else:
-        module.fail_json(msg="pypureclient SDK not installed.")
+        module.fail_json(
+            msg="You must set PUREFB_URL and PUREFB_API environment variables "
+            "or the fb_url and api_token module arguments. Alternatively, use "
+            "token-based authentication via id_token, or private_key_file with "
+            "client_id, key_id, issuer and username (or the matching PUREFB_* "
+            "environment variables)."
+        )
+    res = system.get_hardware()
+    if res.status_code != 200:
+        module.fail_json(
+            msg="Pure Storage FlashBlade authentication failed. Error: {0}".format(
+                get_error_message(res)
+            )
+        )
     return system
 
 
@@ -160,5 +190,14 @@ def purefb_argument_spec():
     return dict(
         fb_url=dict(),
         api_token=dict(no_log=True),
+        # OAuth2 / API-client token authentication (alternatives to api_token).
+        # See the purefb_apiclient module for registering the trusted key.
+        id_token=dict(no_log=True),
+        private_key_file=dict(no_log=False),
+        private_key_password=dict(no_log=True),
+        username=dict(),
+        client_id=dict(),
+        key_id=dict(no_log=False),
+        issuer=dict(),
         disable_warnings=dict(type="bool", default=False),
     )
