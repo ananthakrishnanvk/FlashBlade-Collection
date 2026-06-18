@@ -357,10 +357,19 @@ def main():
         # If no context is provided set the context to the local array name
         module.params["context"] = list(blade.get_arrays().items)[0].name
 
-    local_bucket = get_local_bucket(module, blade)
     local_replica_link = get_local_rl(module, blade)
 
-    if not module.params["target"] and state == "present" and not local_replica_link:
+    # Removing a replica link only requires the link itself. The local and
+    # remote buckets, the target connection and the remote credential may
+    # already have been deleted, so none of these are required when deleting.
+    if state == "absent":
+        if local_replica_link:
+            delete_rl_policy(module, blade, local_replica_link)
+        module.exit_json(changed=False)
+
+    local_bucket = get_local_bucket(module, blade)
+
+    if not module.params["target"] and not local_replica_link:
         module.fail_json(
             msg="target parameter is required when creating a new replica link"
         )
@@ -395,12 +404,10 @@ def main():
         if local_replica_link.status == "unhealthy":
             module.fail_json(msg="Replica Link unhealthy - please check target")
 
-    if state == "present" and not local_replica_link:
+    if not local_replica_link:
         create_rl(module, blade, remote_cred)
-    elif state == "present" and local_replica_link:
+    else:
         update_rl_policy(module, blade, local_replica_link)
-    elif state == "absent" and local_replica_link:
-        delete_rl_policy(module, blade, local_replica_link)
 
     module.exit_json(changed=False)
 
