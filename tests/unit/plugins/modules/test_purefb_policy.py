@@ -1,7 +1,7 @@
 # Copyright: (c) 2026, Everpure Ansible Team <pure-ansible-team@everpuredata.com>
 # GNU General Public License v3.0+ (see COPYING.GPLv3 or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-"""Unit tests for purefb_policy module (NFS export policy rule handling)."""
+"""Unit tests for purefb_policy rule idempotency and context_names/fleet handling."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -24,7 +24,6 @@ mock_termios.TCSAFLUSH = 2
 sys.modules["termios"] = mock_termios
 sys.modules["tty"] = MagicMock()
 
-# Mock ansible_collections module structure
 sys.modules["ansible_collections"] = MagicMock()
 sys.modules["ansible_collections.purestorage"] = MagicMock()
 sys.modules["ansible_collections.purestorage.flashblade"] = MagicMock()
@@ -45,7 +44,11 @@ sys.modules[
     "ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils"
 ] = MagicMock()
 
-from plugins.modules.purefb_policy import update_nfs_policy, update_snap_policy
+from plugins.modules.purefb_policy import (
+    rename_smb_share_policy,
+    update_nfs_policy,
+    update_snap_policy,
+)
 
 
 def _existing_rule(access="root-squash"):
@@ -250,3 +253,53 @@ class TestUpdateSnapPolicy:
 
         blade.patch_policies.assert_not_called()
         module.exit_json.assert_called_once_with(changed=False)
+
+
+def _ctx_module(context):
+    module = Mock()
+    module.check_mode = False
+    module.params = {
+        "name": "share_pol",
+        "rename": "share_pol2",
+        "context": context,
+    }
+    module.fail_json = Mock(side_effect=SystemExit("fail_json called"))
+    module.exit_json = Mock()
+    return module
+
+
+def _ctx_blade():
+    blade = Mock()
+    # Array supports the context API version (2.17+)
+    blade.get_versions.return_value.items = ["2.17"]
+    ok = Mock()
+    ok.status_code = 200
+    blade.patch_smb_share_policies.return_value = ok
+    return blade
+
+
+class TestPolicyContextGating:
+    """context_names must only be sent when a context is set."""
+
+    def test_no_context_omits_context_names(self):
+        """Standalone array (no context) must not send context_names."""
+        module = _ctx_module(context="")
+        blade = _ctx_blade()
+
+        rename_smb_share_policy(module, blade)
+
+        blade.patch_smb_share_policies.assert_called_once()
+        assert "context_names" not in blade.patch_smb_share_policies.call_args[1]
+        module.exit_json.assert_called_once_with(changed=True)
+
+    def test_with_context_sends_context_names(self):
+        """When a context is set, context_names must be sent."""
+        module = _ctx_module(context="member-array")
+        blade = _ctx_blade()
+
+        rename_smb_share_policy(module, blade)
+
+        blade.patch_smb_share_policies.assert_called_once()
+        assert blade.patch_smb_share_policies.call_args[1]["context_names"] == [
+            "member-array"
+        ]
