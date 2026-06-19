@@ -1,20 +1,21 @@
 namespace: purestorage
 name: flashblade
-version: 1.25.1
+version: 1.26.0
 readme: README.md
 authors:
-  - Pure Storage Ansible Team <pure-ansible-team@purestorage.com>
-description: Collection of modules to manage Pure Storage FlashBlade
+  - Everpure Ansible Team <pure-ansible-team@everpuredata.com>
+description: Collection of modules to manage Everpure FlashBlade
 license:
   - GPL-3.0-or-later
   - BSD-2-Clause
 tags:
+  - everpure
   - purestorage
   - flashblade
   - storage
   - object
   - nfs
 dependencies: {}
-repository: https://github.com/Pure-Storage-Ansible/FlashBlade-Collection
+repository: https://github.com/Everpure-Ansible/FlashBlade-Collection
 documentation: https://docs.ansible.com/ansible/latest/collections/purestorage/flashblade/index.html#plugins-in-purestorage-flashblade
-issues: https://github.com/Pure-Storage-Ansible/FlashBlade-Collection/issues
+issues: https://github.com/Everpure-Ansible/FlashBlade-Collection/issues
