@@ -143,6 +143,17 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.common impo
 MIN_API_VERSION = "2.17"
 
 
+def _context_kwargs(module):
+    """Return context_names kwargs only when a context is set.
+
+    A standalone array is "not in a fleet" and rejects fleet context, so
+    only send context_names when a context has actually been provided.
+    """
+    if module.params["context"]:
+        return {"context_names": [module.params["context"]]}
+    return {}
+
+
 def get_export(module, blade):
     """Return Filesystem export true name or None"""
     filter_string = (
@@ -156,9 +167,7 @@ def get_export(module, blade):
         + module.params["server"]
         + "'"
     )
-    res = blade.get_file_system_exports(
-        context_names=[module.params["context"]], filter=filter_string
-    )
+    res = blade.get_file_system_exports(filter=filter_string, **_context_kwargs(module))
     if res.status_code == 200 and res.total_item_count != 0:
         return list(res.items)[0]
     return None
@@ -175,9 +184,9 @@ def create_export(module, blade):
             )
             res = blade.post_file_system_exports(
                 file_system_export=exp_obj,
-                context_names=[module.params["context"]],
                 member_names=[module.params["filesystem"]],
                 policy_names=[module.params["export_policy"]],
+                **_context_kwargs(module),
             )
         else:
             if not module.params["client_policy"]:
@@ -191,9 +200,9 @@ def create_export(module, blade):
             )
             res = blade.post_file_system_exports(
                 file_system_export=exp_obj,
-                context_names=[module.params["context"]],
                 member_names=[module.params["filesystem"]],
                 policy_names=[module.params["client_policy"]],
+                **_context_kwargs(module),
             )
 
     if res.status_code != 200:
@@ -333,7 +342,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if MIN_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
     server_exists = bool(
         blade.get_servers(names=[module.params["server"]]).status_code == 200
     )

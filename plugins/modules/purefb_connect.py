@@ -153,7 +153,7 @@ FAN_OUT_MAXIMUM = 5
 
 def _check_connected(module, blade):
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         connected_blades = list(
             blade.get_array_connections(context_names=[module.params["context"]]).items
         )
@@ -191,7 +191,7 @@ def break_connection(module, blade, target_blade):
     api_version = list(blade.get_versions().items)
     changed = True
     if not module.check_mode:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             source_blade = (
                 blade.get_arrays(context_names=[module.params["context"]]).items[0].name
             )
@@ -201,7 +201,7 @@ def break_connection(module, blade, target_blade):
             module.fail_json(
                 msg="Disconnect can only happen from the array that formed the connection"
             )
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.delete_array_connections(
                 remote_names=[target_blade.remote.name],
                 context_names=[module.params["context"]],
@@ -223,7 +223,7 @@ def create_connection(module, blade):
     """Create connection between REST 2 capable arrays"""
     api_version = list(blade.get_versions().items)
     changed = True
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_array_connections(context_names=[module.params["context"]])
     else:
         res = blade.get_array_connections()
@@ -295,7 +295,7 @@ def create_connection(module, blade):
             connection_key=connection_key,
         )
     if not module.check_mode:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.post_array_connections(
                 array_connection=connection_info,
                 context_names=[module.params["context"]],
@@ -327,7 +327,7 @@ def update_connection(module, blade):
             msg="Update can only happen from the array that formed the connection"
         )
     if module.params["encrypted"] != remote_connection.encrypted:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.get_file_system_replica_links(
                 context_names=[module.params["context"]]
             )
@@ -346,7 +346,7 @@ def update_connection(module, blade):
         not remote_connection.throttle.default_limit
         and not remote_connection.throttle.window_limit
     ):
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             blade.get_bucket_replica_links(context_names=[module.params["context"]])
         else:
             blade.get_bucket_replica_links()
@@ -417,7 +417,7 @@ def update_connection(module, blade):
                 encrypted=new_connection["encrypted"],
                 throttle=throttle,
             )
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.patch_array_connections(
                     remote_names=[remote_name],
                     array_connection=connection_info,
@@ -467,7 +467,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
 
     if module.params["default_limit"]:
         if (

@@ -86,7 +86,7 @@ def delete_host(module, blade):
     else:
         changed = True
         if not module.check_mode:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.delete_object_store_virtual_hosts(
                     names=[module.params["name"]],
                     context_names=[module.params["context"]],
@@ -109,7 +109,7 @@ def add_host(module, blade):
     changed = True
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.post_object_store_virtual_hosts(
                 names=[module.params["name"]], context_names=[module.params["context"]]
             )
@@ -140,10 +140,12 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
     state = module.params["state"]
 
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         exists = bool(
             blade.get_object_store_virtual_hosts(
                 names=[module.params["name"]], context_names=[module.params["context"]]
@@ -157,7 +159,7 @@ def main():
             ).status_code
             == 200
         )
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         vhosts = blade.get_object_store_virtual_hosts(
             context_names=[module.params["context"]]
         )
