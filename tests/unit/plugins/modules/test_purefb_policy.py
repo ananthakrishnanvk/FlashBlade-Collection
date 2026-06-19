@@ -41,8 +41,11 @@ sys.modules[
 sys.modules[
     "ansible_collections.purestorage.flashblade.plugins.module_utils.version"
 ] = MagicMock()
+sys.modules[
+    "ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils"
+] = MagicMock()
 
-from plugins.modules.purefb_policy import update_nfs_policy
+from plugins.modules.purefb_policy import update_nfs_policy, update_snap_policy
 
 
 def _existing_rule(access="root-squash"):
@@ -132,4 +135,118 @@ class TestUpdateNfsPolicyRule:
         update_nfs_policy(module, blade)
 
         blade.patch_nfs_export_policies_rules.assert_not_called()
+        module.exit_json.assert_called_once_with(changed=False)
+
+    def test_access_change_preserves_unspecified_anon(self):
+        """An access-only change must not reset anonuid/anongid left unset."""
+        import plugins.modules.purefb_policy as pol
+
+        module = _module(access="no-squash")
+        # Task changes access only and does not re-specify the anon mappings.
+        module.params["anonuid"] = None
+        module.params["anongid"] = None
+        blade = _blade(_existing_rule(access="root-squash"))
+
+        update_nfs_policy(module, blade)
+
+        blade.patch_nfs_export_policies_rules.assert_called_once()
+        # The patched rule must keep the existing anon ids, not null them out.
+        rule_kwargs = pol.NfsExportPolicyRule.call_args[1]
+        assert rule_kwargs["access"] == "no-squash"
+        assert rule_kwargs["anonuid"] == "20000021"
+        assert rule_kwargs["anongid"] == "100021"
+
+
+def _snap_rule(every=86400000, keep_for=86400000, at=None, time_zone=None):
+    """Build a mock SDK snapshot policy rule (values in milliseconds)."""
+    rule = Mock()
+    rule.every = every
+    rule.keep_for = keep_for
+    rule.at = at
+    rule.time_zone = time_zone
+    return rule
+
+
+def _snap_module(keep_for=None, every=None, at=None, timezone=None):
+    """Build a mock AnsibleModule for update_snap_policy.
+
+    keep_for/every are in seconds (the task's units), matching the argspec.
+    """
+    module = Mock()
+    module.check_mode = False
+    module.params = {
+        "name": "daily_snap_policy",
+        "keep_for": keep_for,
+        "every": every,
+        "at": at,
+        "timezone": timezone,
+        "enabled": True,
+        "context": "",
+        "state": "present",
+        "filesystem": None,
+        "replica_link": None,
+    }
+    module.fail_json = Mock(side_effect=SystemExit("fail_json called"))
+    module.exit_json = Mock()
+    return module
+
+
+def _snap_blade(existing_rule):
+    """Build a mock blade whose policy has the given single schedule rule."""
+    blade = Mock()
+    blade.get_versions.return_value.items = []  # no context API version
+
+    policy = Mock()
+    policy.rules = [existing_rule]
+    policies_resp = Mock()
+    policies_resp.items = [policy]
+    blade.get_policies.return_value = policies_resp
+
+    ok = Mock()
+    ok.status_code = 200
+    blade.patch_policies.return_value = ok
+    return blade
+
+
+class TestUpdateSnapPolicy:
+    """Regression tests for snapshot policy rule partial updates."""
+
+    def test_retention_change_preserves_at_schedule(self):
+        """Updating every/keep_for on an at-scheduled policy must preserve the
+        existing ``at`` time and timezone, not drop them to an interval rule."""
+        import plugins.modules.purefb_policy as pol
+
+        # Existing rule keeps snapshots taken daily at 10:00 in a named tz.
+        # The task changes retention/interval but does not re-specify at/timezone
+        # (the guards require every and keep_for to be supplied together).
+        module = _snap_module(keep_for=259200, every=86400)
+        blade = _snap_blade(
+            _snap_rule(
+                every=86400000,
+                keep_for=86400000,
+                at=36000000,
+                time_zone="America/New_York",
+            )
+        )
+
+        update_snap_policy(module, blade)
+
+        blade.patch_policies.assert_called_once()
+        module.fail_json.assert_not_called()
+        # The re-added rule must keep the at time and timezone, not drop them.
+        rule_kwargs = pol.PolicyRule.call_args[1]
+        assert rule_kwargs["keep_for"] == 259200 * 1000
+        assert rule_kwargs["every"] == 86400 * 1000
+        assert rule_kwargs["at"] == 36000000
+        assert rule_kwargs["time_zone"] == "America/New_York"
+        module.exit_json.assert_called_once_with(changed=True)
+
+    def test_no_change_is_idempotent(self):
+        """Identical desired schedule must not PATCH the policy."""
+        module = _snap_module(keep_for=86400, every=86400)
+        blade = _snap_blade(_snap_rule(every=86400000, keep_for=86400000))
+
+        update_snap_policy(module, blade)
+
+        blade.patch_policies.assert_not_called()
         module.exit_json.assert_called_once_with(changed=False)
