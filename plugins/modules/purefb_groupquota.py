@@ -144,7 +144,7 @@ def get_quota(module, blade):
     """Return Filesystem User Quota or None"""
     api_version = list(blade.get_versions().items)
     if module.params["gid"]:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.get_quotas_groups(
                 file_system_names=[module.params["name"]],
                 filter="group.id=" + str(module.params["gid"]),
@@ -156,7 +156,7 @@ def get_quota(module, blade):
                 filter="group.id=" + str(module.params["gid"]),
             )
     else:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.get_quotas_groups(
                 file_system_names=[module.params["name"]],
                 filter="group.name='" + module.params["gname"] + "'",
@@ -178,7 +178,7 @@ def create_quota(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         if module.params["gid"]:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_quotas_groups(
                     file_system_names=[module.params["name"]],
                     gids=[module.params["gid"]],
@@ -204,7 +204,7 @@ def create_quota(module, blade):
                     )
                 )
         else:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_quotas_groups(
                     file_system_names=[module.params["name"]],
                     group_names=[module.params["gname"]],
@@ -241,7 +241,7 @@ def update_quota(module, blade):
         changed = True
         if not module.check_mode:
             if module.params["gid"]:
-                if CONTEXT_API_VERSION in api_version:
+                if CONTEXT_API_VERSION in api_version and module.params["context"]:
                     res = blade.patch_quotas_groups(
                         file_system_names=[module.params["name"]],
                         gids=[module.params["gid"]],
@@ -267,7 +267,7 @@ def update_quota(module, blade):
                         )
                     )
             else:
-                if CONTEXT_API_VERSION in api_version:
+                if CONTEXT_API_VERSION in api_version and module.params["context"]:
                     res = blade.patch_quotas_groups(
                         file_system_names=[module.params["name"]],
                         group_names=[module.params["gname"]],
@@ -301,7 +301,7 @@ def delete_quota(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         if module.params["gid"]:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.delete_quotas_groups(
                     file_system_names=[module.params["name"]],
                     gids=[module.params["gid"]],
@@ -319,7 +319,7 @@ def delete_quota(module, blade):
                     )
                 )
         else:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.delete_quotas_groups(
                     file_system_names=[module.params["name"]],
                     group_names=[module.params["gname"]],
@@ -371,7 +371,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
     fsys = get_filesystem(module, blade)
     if not fsys:
         module.fail_json(

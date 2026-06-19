@@ -166,7 +166,7 @@ CONTEXT_API_VERSION = "2.17"
 def get_latest_fssnapshot(module, blade):
     """Get the name of the latest snpshot or None"""
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_file_system_snapshots(
             names_or_owner_names=[module.params["name"]],
             context_names=[module.params["context"]],
@@ -195,7 +195,7 @@ def get_latest_fssnapshot(module, blade):
 def get_fssnapshot(module, blade):
     """Return Snapshot or None"""
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_file_system_snapshots(
             names_or_owner_names=[
                 module.params["name"] + "." + module.params["suffix"]
@@ -221,7 +221,7 @@ def create_snapshot(module, blade):
     # so this provides backwards compatability
     # target = module.params["target"].replace("[", "").replace("'", "").replace("]", "")
     blade_exists = False
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         connected_blades = list(
             blade.get_array_connections(context_names=[module.params["context"]]).items
         )
@@ -240,7 +240,7 @@ def create_snapshot(module, blade):
     changed = True
     if not module.check_mode:
         if module.params["target"]:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_file_system_snapshots(
                     source_names=[module.params["name"]],
                     send=module.params["now"],
@@ -260,7 +260,7 @@ def create_snapshot(module, blade):
                     ),
                 )
         else:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_file_system_snapshots(
                     source_names=[module.params["name"]],
                     file_system_snapshot=FileSystemSnapshotPost(
@@ -291,7 +291,7 @@ def restore_snapshot(module, blade):
     snapname = get_latest_fssnapshot(module, blade)
     if snapname is not None:
         if not module.check_mode:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_file_systems(
                     names=[module.params["name"]],
                     overwrite=True,
@@ -327,7 +327,7 @@ def recover_snapshot(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         snapname = module.params["name"] + "." + module.params["suffix"]
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.patch_file_system_snapshots(
                 names=[snapname],
                 file_system_snapshot=FileSystemSnapshot(destroyed=False),
@@ -359,7 +359,7 @@ def delete_snapshot(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         snapname = module.params["name"] + "." + module.params["suffix"]
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.patch_file_system_snapshots(
                 names=[snapname],
                 latest_replica=module.params["latest_replica"],
@@ -379,7 +379,7 @@ def delete_snapshot(module, blade):
                 )
             )
         if module.params["eradicate"]:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.delete_file_system_snapshots(
                     names=[snapname], context_names=[module.params["context"]]
                 )
@@ -400,7 +400,7 @@ def eradicate_snapshot(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         snapname = module.params["name"] + "." + module.params["suffix"]
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.delete_file_system_snapshots(
                 names=[snapname], context_names=[module.params["context"]]
             )
@@ -449,7 +449,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
 
     if SNAP_NOW_API not in api_version and module.params["now"]:
         module.fail_json(

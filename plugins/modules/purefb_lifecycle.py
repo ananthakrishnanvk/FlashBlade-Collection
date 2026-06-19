@@ -145,7 +145,7 @@ CONTEXT_API_VERSION = "2.17"
 
 def _get_bucket(module, blade):
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_buckets(
             names=[module.params["bucket"]], context_names=[module.params["context"]]
         )
@@ -175,7 +175,7 @@ def delete_rule(module, blade):
     changed = True
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.delete_lifecycle_rules(
                 names=[module.params["bucket"] + "/" + module.params["name"]],
                 context_names=[module.params["context"]],
@@ -232,7 +232,7 @@ def create_rule(module, blade):
             prefix=module.params["prefix"],
         )
         if attr.keep_current_version_until:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_lifecycle_rules(
                     rule=attr,
                     confirm_date=True,
@@ -241,7 +241,7 @@ def create_rule(module, blade):
             else:
                 res = blade.post_lifecycle_rules(rule=attr, confirm_date=True)
         else:
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.post_lifecycle_rules(
                     rule=attr, context_names=[module.params["context"]]
                 )
@@ -257,7 +257,7 @@ def create_rule(module, blade):
             )
         if not module.params["enabled"]:
             attr = LifecycleRulePatch(enabled=module.params["enabled"])
-            if CONTEXT_API_VERSION in api_version:
+            if CONTEXT_API_VERSION in api_version and module.params["context"]:
                 res = blade.patch_lifecycle_rules(
                     names=[module.params["bucket"] + "/" + module.params["name"]],
                     lifecycle=attr,
@@ -330,7 +330,7 @@ def update_rule(module, blade, rule):
                 enabled=new_rule["enabled"],
             )
             if attr.keep_current_version_until:
-                if CONTEXT_API_VERSION in api_version:
+                if CONTEXT_API_VERSION in api_version and module.params["context"]:
                     res = blade.patch_lifecycle_rules(
                         names=[module.params["bucket"] + "/" + module.params["name"]],
                         lifecycle=attr,
@@ -344,7 +344,7 @@ def update_rule(module, blade, rule):
                         confirm_date=True,
                     )
             else:
-                if CONTEXT_API_VERSION in api_version:
+                if CONTEXT_API_VERSION in api_version and module.params["context"]:
                     res = blade.patch_lifecycle_rules(
                         names=[module.params["bucket"] + "/" + module.params["name"]],
                         lifecycle=attr,
@@ -399,7 +399,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
 
     if module.params["keep_previous_for"] and not module.params["keep_previous_for"][
         -1:
@@ -427,7 +429,7 @@ def main():
     rule = None
     if module.params["keep_current_until"]:
         module.params["keep_current_until"] = _convert_date_to_epoch(module)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_lifecycle_rules(
             names=[module.params["bucket"] + "/" + module.params["name"]],
             context_names=[module.params["context"]],

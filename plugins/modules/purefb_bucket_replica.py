@@ -133,7 +133,7 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.common impo
 def get_local_bucket(module, blade):
     """Return Bucket or None"""
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_buckets(
             context_names=[module.params["context"]],
             names=[module.params["name"]],
@@ -150,7 +150,7 @@ def get_local_bucket(module, blade):
 def get_remote_cred(module, blade, target):
     """Return Remote Credential or None"""
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_object_store_remote_credentials(
             names=[target + "/" + module.params["credential"]],
             context_names=[module.params["context"]],
@@ -169,7 +169,7 @@ def get_remote_cred(module, blade, target):
 def get_local_rl(module, blade):
     """Return Bucket Replica Link or None"""
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         res = blade.get_bucket_replica_links(
             local_bucket_names=[module.params["name"]],
             context_names=[module.params["context"]],
@@ -185,7 +185,7 @@ def get_local_rl(module, blade):
 
 def get_connected(module, blade):
     api_version = list(blade.get_versions().items)
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         connected_blades = blade.get_array_connections(
             context_names=[module.params["context"]]
         )
@@ -198,7 +198,7 @@ def get_connected(module, blade):
             "partially_connected",
         ]:
             return item.remote.name
-    if CONTEXT_API_VERSION in api_version:
+    if CONTEXT_API_VERSION in api_version and module.params["context"]:
         connected_targets = blade.get_targets(context_names=[module.params["context"]])
     else:
         connected_targets = blade.get_targets()
@@ -225,7 +225,7 @@ def create_rl(module, blade, remote_cred):
             cascading_enabled=module.params["cascading"],
             paused=module.params["paused"],
         )
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.post_bucket_replica_links(
                 local_bucket_names=[module.params["name"]],
                 remote_bucket_names=[module.params["target_bucket"]],
@@ -270,7 +270,7 @@ def update_rl_policy(module, blade, local_replica_link):
     else:
         cascading = local_replica_link.cascading_enabled
     if not module.check_mode and changed:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.patch_bucket_replica_links(
                 local_bucket_names=[module.params["name"]],
                 remote_bucket_names=[local_replica_link.remote_bucket.name],
@@ -307,7 +307,7 @@ def delete_rl_policy(module, blade, local_replica_link):
     api_version = list(blade.get_versions().items)
     changed = True
     if not module.check_mode:
-        if CONTEXT_API_VERSION in api_version:
+        if CONTEXT_API_VERSION in api_version and module.params["context"]:
             res = blade.delete_bucket_replica_links(
                 remote_names=[local_replica_link.remote.name],
                 local_bucket_names=[module.params["name"]],
@@ -355,7 +355,9 @@ def main():
     api_version = list(blade.get_versions().items)
     if CONTEXT_API_VERSION in api_version and not module.params["context"]:
         # If no context is provided set the context to the local array name
-        module.params["context"] = list(blade.get_arrays().items)[0].name
+        fleet_res = blade.get_fleets()
+        if fleet_res.status_code == 200 and list(fleet_res.items):
+            module.params["context"] = list(blade.get_arrays().items)[0].name
 
     local_replica_link = get_local_rl(module, blade)
 
