@@ -2478,6 +2478,7 @@ def update_nfs_policy(module, blade):
             if not done:
                 old_policy_rule = rules[0]
                 current_rule = {
+                    "access": getattr(old_policy_rule, "access", None),
                     "anongid": getattr(old_policy_rule, "anongid", None),
                     "anonuid": getattr(old_policy_rule, "anonuid", None),
                     "atime": old_policy_rule.atime,
@@ -2519,7 +2520,12 @@ def update_nfs_policy(module, blade):
                     new_fileid_32bit = module.params["fileid_32bit"]
                 else:
                     new_fileid_32bit = current_rule["fileid_32bit"]
+                if module.params["access"]:
+                    new_access = module.params["access"]
+                else:
+                    new_access = current_rule["access"]
                 new_rule = {
+                    "access": new_access,
                     "anongid": new_anongid,
                     "anonuid": new_anonuid,
                     "atime": new_atime,

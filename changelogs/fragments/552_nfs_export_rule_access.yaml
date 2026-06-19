@@ -1,0 +1,2 @@
+bugfixes:
+  - purefb_policy - Fixed NFS export policy rules not updating when only the ``access`` value (e.g. root-squash to no-squash) changed; ``access`` was missing from the idempotency comparison.
