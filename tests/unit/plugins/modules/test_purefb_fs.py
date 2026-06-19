@@ -426,6 +426,120 @@ class TestPurefbFs:
         mock_blade.post_file_systems.assert_called_once()
         mock_module.exit_json.assert_called_with(changed=True)
 
+    @patch("plugins.modules.purefb_fs.FileSystemPost")
+    @patch("plugins.modules.purefb_fs.Nfs")
+    @patch("plugins.modules.purefb_fs.SmbPost")
+    @patch("plugins.modules.purefb_fs.Http")
+    @patch("plugins.modules.purefb_fs.MultiProtocolPost")
+    @patch("plugins.modules.purefb_fs.human_to_bytes")
+    @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
+    def test_create_fs_no_context_omits_context_names(
+        self,
+        mock_human_to_bytes,
+        mock_multi_protocol,
+        mock_http,
+        mock_smb,
+        mock_nfs,
+        mock_fs_post,
+    ):
+        """On a context-capable array with no context set (e.g. standalone,
+        not in a fleet), context_names must NOT be sent."""
+        mock_module = Mock()
+        mock_module.check_mode = False
+        mock_module.params = {
+            "name": "test-fs",
+            "size": "1T",
+            "nfsv3": True,
+            "nfsv4": True,
+            "nfs_rules": None,
+            "smb": False,
+            "http": False,
+            "snapshot": False,
+            "fastremove": False,
+            "hard_limit": False,
+            "user_quota": None,
+            "group_quota": None,
+            "policy": None,
+            "access_control": "shared",
+            "safeguard_acls": True,
+            "export_policy": None,
+            "share_policy": None,
+            "client_policy": None,
+            "continuous_availability": True,
+            "context": "",  # no context -> standalone / not in a fleet
+            "storage_class": None,
+            "group_ownership": None,
+        }
+        mock_blade = Mock()
+        # Array supports the context API version (2.17+)
+        mock_blade.get_versions.return_value.items = ["2.17"]
+        mock_human_to_bytes.return_value = 1099511627776
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_blade.post_file_systems.return_value = mock_response
+
+        create_fs(mock_module, mock_blade)
+
+        mock_blade.post_file_systems.assert_called_once()
+        call_kwargs = mock_blade.post_file_systems.call_args[1]
+        assert "context_names" not in call_kwargs
+
+    @patch("plugins.modules.purefb_fs.FileSystemPost")
+    @patch("plugins.modules.purefb_fs.Nfs")
+    @patch("plugins.modules.purefb_fs.SmbPost")
+    @patch("plugins.modules.purefb_fs.Http")
+    @patch("plugins.modules.purefb_fs.MultiProtocolPost")
+    @patch("plugins.modules.purefb_fs.human_to_bytes")
+    @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
+    def test_create_fs_with_context_sends_context_names(
+        self,
+        mock_human_to_bytes,
+        mock_multi_protocol,
+        mock_http,
+        mock_smb,
+        mock_nfs,
+        mock_fs_post,
+    ):
+        """When a context is explicitly set, context_names must be sent."""
+        mock_module = Mock()
+        mock_module.check_mode = False
+        mock_module.params = {
+            "name": "test-fs",
+            "size": "1T",
+            "nfsv3": True,
+            "nfsv4": True,
+            "nfs_rules": None,
+            "smb": False,
+            "http": False,
+            "snapshot": False,
+            "fastremove": False,
+            "hard_limit": False,
+            "user_quota": None,
+            "group_quota": None,
+            "policy": None,
+            "access_control": "shared",
+            "safeguard_acls": True,
+            "export_policy": None,
+            "share_policy": None,
+            "client_policy": None,
+            "continuous_availability": True,
+            "context": "member-array",
+            "storage_class": None,
+            "group_ownership": None,
+        }
+        mock_blade = Mock()
+        mock_blade.get_versions.return_value.items = ["2.17"]
+        mock_human_to_bytes.return_value = 1099511627776
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_blade.post_file_systems.return_value = mock_response
+
+        create_fs(mock_module, mock_blade)
+
+        mock_blade.post_file_systems.assert_called_once()
+        call_kwargs = mock_blade.post_file_systems.call_args[1]
+        assert call_kwargs["context_names"] == ["member-array"]
+
     @patch("plugins.modules.purefb_fs.HAS_PYPURECLIENT", True)
     def test_create_fs_check_mode(self):
         """Test creating filesystem in check mode"""
