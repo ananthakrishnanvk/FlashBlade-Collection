@@ -49,8 +49,31 @@ class TestPurefbArgumentSpec:
     def test_all_expected_keys(self):
         """Test that spec contains exactly the expected keys."""
         result = purefb_argument_spec()
-        expected_keys = {"fb_url", "api_token", "disable_warnings"}
+        expected_keys = {
+            "fb_url",
+            "api_token",
+            "id_token",
+            "private_key_file",
+            "private_key_password",
+            "username",
+            "client_id",
+            "key_id",
+            "issuer",
+            "disable_warnings",
+        }
         assert set(result.keys()) == expected_keys
+
+    def test_token_auth_secrets_no_log(self):
+        """Secret token-auth params must be marked no_log."""
+        result = purefb_argument_spec()
+        assert result["id_token"]["no_log"] is True
+        assert result["private_key_password"]["no_log"] is True
+
+    def test_non_secret_params_no_log_false(self):
+        """Non-secret params that trip the no_log heuristic are silenced."""
+        result = purefb_argument_spec()
+        assert result["private_key_file"]["no_log"] is False
+        assert result["key_id"]["no_log"] is False
 
 
 class TestGetSystem:
@@ -274,3 +297,97 @@ class TestGetSystem:
         call_kwargs = mock_client_class.call_args[1]
         assert "Ubuntu 22.04" in call_kwargs["user_agent"]
         assert "Ansible" in call_kwargs["user_agent"]
+
+    @patch("plugins.module_utils.purefb.flashblade.Client")
+    @patch("plugins.module_utils.purefb.HAS_PYPURECLIENT", True)
+    @patch("plugins.module_utils.purefb.environ")
+    def test_with_id_token(self, mock_environ, mock_client_class):
+        """Test get_system authenticates with a pre-signed id_token."""
+        mock_environ.get.return_value = None
+        mock_module = Mock()
+        mock_module.params = {
+            "fb_url": "https://flashblade.example.com",
+            "api_token": None,
+            "id_token": "eyJhbGciOiJSUzI1NiJ9.payload.sig",
+            "disable_warnings": False,
+        }
+        mock_client = Mock()
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_client.get_hardware.return_value = mock_response
+        mock_client_class.return_value = mock_client
+
+        result = get_system(mock_module)
+
+        call_kwargs = mock_client_class.call_args[1]
+        assert call_kwargs["target"] == "https://flashblade.example.com"
+        assert call_kwargs["id_token"] == "eyJhbGciOiJSUzI1NiJ9.payload.sig"
+        assert "api_token" not in call_kwargs
+        assert result == mock_client
+
+    @patch("plugins.module_utils.purefb.flashblade.Client")
+    @patch("plugins.module_utils.purefb.HAS_PYPURECLIENT", True)
+    @patch("plugins.module_utils.purefb.environ")
+    def test_with_private_key(self, mock_environ, mock_client_class):
+        """Test get_system authenticates with the private-key app flow."""
+        mock_environ.get.return_value = None
+        mock_module = Mock()
+        mock_module.params = {
+            "fb_url": "https://flashblade.example.com",
+            "api_token": None,
+            "id_token": None,
+            "private_key_file": "/run/secrets/aap.pem",
+            "private_key_password": "s3cret",
+            "username": "automation",
+            "client_id": "cid-123",
+            "key_id": "kid-456",
+            "issuer": "AAP",
+            "disable_warnings": False,
+        }
+        mock_client = Mock()
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_client.get_hardware.return_value = mock_response
+        mock_client_class.return_value = mock_client
+
+        result = get_system(mock_module)
+
+        call_kwargs = mock_client_class.call_args[1]
+        assert call_kwargs["target"] == "https://flashblade.example.com"
+        assert call_kwargs["private_key_file"] == "/run/secrets/aap.pem"
+        assert call_kwargs["private_key_password"] == "s3cret"
+        assert call_kwargs["username"] == "automation"
+        assert call_kwargs["client_id"] == "cid-123"
+        assert call_kwargs["key_id"] == "kid-456"
+        assert call_kwargs["issuer"] == "AAP"
+        assert "api_token" not in call_kwargs
+        assert result == mock_client
+
+    @patch("plugins.module_utils.purefb.flashblade.Client")
+    @patch("plugins.module_utils.purefb.HAS_PYPURECLIENT", True)
+    @patch("plugins.module_utils.purefb.environ")
+    def test_incomplete_private_key_set_fails(self, mock_environ, mock_client_class):
+        """An incomplete private-key set (no username) must fail cleanly."""
+        mock_module = Mock()
+        mock_module.params = {
+            "fb_url": "https://flashblade.example.com",
+            "api_token": None,
+            "id_token": None,
+            "private_key_file": "/run/secrets/aap.pem",
+            "private_key_password": None,
+            "username": None,  # missing -> not a complete set
+            "client_id": "cid-123",
+            "key_id": "kid-456",
+            "issuer": "AAP",
+            "disable_warnings": False,
+        }
+        mock_module.fail_json.side_effect = SystemExit("fail_json called")
+        mock_environ.get.return_value = None
+
+        try:
+            get_system(mock_module)
+        except SystemExit:
+            pass
+
+        mock_module.fail_json.assert_called_once()
+        mock_client_class.assert_not_called()
