@@ -996,11 +996,13 @@ def update_smb_share_policy(module, blade):
             if current_rule != new_rule:
                 changed = True
                 if not module.check_mode:
+                    # Patch from the merged new_rule so unspecified fields keep
+                    # their current value rather than being reset.
                     rule = SmbSharePolicyRule(
-                        principal=module.params["principal"],
-                        change=module.params["change"],
-                        read=module.params["read"],
-                        full_control=module.params["full_control"],
+                        principal=new_rule["principal"],
+                        change=new_rule["change"],
+                        read=new_rule["read"],
+                        full_control=new_rule["full_control"],
                     )
                     if CONTEXT_API_VERSION in versions and module.params["context"]:
                         res = blade.patch_smb_share_policies_rules(
@@ -1604,16 +1606,18 @@ def update_smb_client_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
+                        # Patch from the merged new_rule so unspecified fields keep
+                        # their current value rather than being reset.
                         if SMB_ENCRYPT_API_VERSION in versions:
                             rule = SmbClientPolicyRule(
-                                client=module.params["client"],
-                                permission=module.params["permission"],
-                                encryption=module.params["smb_encryption"],
+                                client=new_rule["client"],
+                                permission=new_rule["permission"],
+                                encryption=new_rule["encryption"],
                             )
                         else:
                             rule = SmbClientPolicyRule(
-                                client=module.params["client"],
-                                permission=module.params["permission"],
+                                client=new_rule["client"],
+                                permission=new_rule["permission"],
                             )
                         if CONTEXT_API_VERSION in versions and module.params["context"]:
                             res = blade.patch_smb_client_policies_rules(
@@ -1974,10 +1978,12 @@ def update_network_access_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
+                        # Patch from the merged new_rule so unspecified fields keep
+                        # their current value rather than being reset.
                         rule = NetworkAccessPolicyRule(
-                            client=module.params["client"],
-                            effect=module.params["effect"],
-                            interfaces=module.params["interfaces"],
+                            client=new_rule["client"],
+                            effect=new_rule["effect"],
+                            interfaces=new_rule["interfaces"],
                         )
                         if CONTEXT_API_VERSION in versions and module.params["context"]:
                             res = blade.patch_network_access_policies_rules(
@@ -2503,6 +2509,7 @@ def update_nfs_policy(module, blade):
             if not done:
                 old_policy_rule = rules[0]
                 current_rule = {
+                    "access": getattr(old_policy_rule, "access", None),
                     "anongid": getattr(old_policy_rule, "anongid", None),
                     "anonuid": getattr(old_policy_rule, "anonuid", None),
                     "atime": old_policy_rule.atime,
@@ -2544,7 +2551,12 @@ def update_nfs_policy(module, blade):
                     new_fileid_32bit = module.params["fileid_32bit"]
                 else:
                     new_fileid_32bit = current_rule["fileid_32bit"]
+                if module.params["access"]:
+                    new_access = module.params["access"]
+                else:
+                    new_access = current_rule["access"]
                 new_rule = {
+                    "access": new_access,
                     "anongid": new_anongid,
                     "anonuid": new_anonuid,
                     "atime": new_atime,
@@ -2557,16 +2569,19 @@ def update_nfs_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
+                        # Build the patch from the merged new_rule values, not the
+                        # raw module params, so fields the task did not specify keep
+                        # their current value instead of being reset to null.
                         rule = NfsExportPolicyRule(
-                            client=module.params["client"],
-                            permission=module.params["permission"],
-                            access=module.params["access"],
-                            anonuid=module.params["anonuid"],
-                            anongid=module.params["anongid"],
-                            fileid_32bit=module.params["fileid_32bit"],
-                            atime=module.params["atime"],
-                            secure=module.params["secure"],
-                            security=module.params["security"],
+                            client=new_rule["client"],
+                            permission=new_rule["permission"],
+                            access=new_rule["access"],
+                            anonuid=new_rule["anonuid"],
+                            anongid=new_rule["anongid"],
+                            fileid_32bit=new_rule["fileid_32bit"],
+                            atime=new_rule["atime"],
+                            secure=new_rule["secure"],
+                            security=new_rule["security"],
                         )
                         if CONTEXT_API_VERSION in versions and module.params["context"]:
                             res = blade.patch_nfs_export_policies_rules(
@@ -3074,7 +3089,7 @@ def update_os_policy(module, blade):
             if module.params["source_ips"]:
                 new_ips = sorted(module.params["source_ips"])
             elif current_rule["ips"]:
-                new_ips = sorted(current_rule["source_ips"])
+                new_ips = sorted(current_rule["ips"])
             else:
                 new_ips = None
             new_rule = {
@@ -3541,6 +3556,34 @@ def update_snap_policy(module, blade):
             0
         ].rules
     create_new = False
+    # Snapshot policies carry a single schedule rule. Fall back to the existing
+    # rule's value for any field the task did not specify, so a partial update
+    # (e.g. changing only keep_for) does not reset the other fields to zero.
+    existing_rule = current_rules[0] if current_rules else None
+    if module.params["at"]:
+        new_at = time_to_milliseconds(module.params["at"])
+    elif existing_rule is not None:
+        new_at = existing_rule.at
+    else:
+        new_at = None
+    if module.params["keep_for"]:
+        new_keep_for = module.params["keep_for"]
+    elif existing_rule is not None:
+        new_keep_for = int(existing_rule.keep_for / 1000)
+    else:
+        new_keep_for = 0
+    if module.params["every"]:
+        new_every = module.params["every"]
+    elif existing_rule is not None:
+        new_every = int(existing_rule.every / 1000)
+    else:
+        new_every = 0
+    if module.params["timezone"]:
+        new_tz = module.params["timezone"]
+    elif existing_rule is not None:
+        new_tz = existing_rule.time_zone
+    else:
+        new_tz = None
     for rule in current_rules:
         current_rule = {
             "at": rule.at,
@@ -3548,22 +3591,6 @@ def update_snap_policy(module, blade):
             "keep_for": rule.keep_for,
             "time_zone": rule.time_zone,
         }
-        if not module.params["at"]:
-            new_at = rule.at
-        else:
-            new_at = time_to_milliseconds(module.params["at"])
-        if module.params["keep_for"]:
-            new_keep_for = module.params["keep_for"]
-        else:
-            new_keep_for = int(rule.keep_for / 1000)
-        if module.params["every"]:
-            new_every = module.params["every"]
-        else:
-            new_every = int(rule.every / 1000)
-        if not module.params["timezone"]:
-            new_tz = rule.time_zone
-        else:
-            new_tz = module.params["timezone"]
         new_rule = {
             "at": new_at,
             "every": new_every * 1000,
@@ -3576,54 +3603,39 @@ def update_snap_policy(module, blade):
     if create_new:
         changed = True
         if not module.check_mode:
-            if module.params["at"] and module.params["every"]:
-                if not module.params["every"] % 86400 == 0:
-                    module.fail_json(
-                        msg="At time can only be set if every value is a multiple of 86400"
-                    )
-                if not module.params["timezone"]:
-                    module.params["timezone"] = _get_local_tz(module)
-                    if module.params["timezone"] not in pytz.all_timezones_set:
-                        module.fail_json(
-                            msg="Timezone {0} is not valid".format(
-                                module.params["timezone"]
-                            )
-                        )
-            if not module.params["keep_for"]:
-                module.params["keep_for"] = 0
-            if not module.params["every"]:
-                module.params["every"] = 0
-            if module.params["keep_for"] < module.params["every"]:
+            # Build the new rule from the merged values above rather than the
+            # raw task parameters, so fields not set in the task keep their
+            # current value instead of being reset to zero.
+            if new_at is not None and new_every and new_every % 86400 != 0:
+                module.fail_json(
+                    msg="At time can only be set if every value is a multiple of 86400"
+                )
+            if new_at is not None and not new_tz:
+                new_tz = _get_local_tz(module)
+                if new_tz not in pytz.all_timezones_set:
+                    module.fail_json(msg="Timezone {0} is not valid".format(new_tz))
+            if new_keep_for < new_every:
                 module.fail_json(
                     msg="Retention period cannot be less than snapshot interval."
                 )
-            if module.params["at"] and not module.params["timezone"]:
-                module.params["timezone"] = _get_local_tz(module)
-                if module.params["timezone"] not in set(pytz.all_timezones_set):
-                    module.fail_json(
-                        msg="Timezone {0} is not valid".format(
-                            module.params["timezone"]
-                        )
-                    )
-
-            if module.params["keep_for"]:
-                if not 300 <= module.params["keep_for"] <= 34560000:
+            if new_keep_for:
+                if not 300 <= new_keep_for <= 34560000:
                     module.fail_json(
                         msg="keep_for parameter is out of range (300 to 34560000)"
                     )
-                if not 300 <= module.params["every"] <= 34560000:
+                if not 300 <= new_every <= 34560000:
                     module.fail_json(
                         msg="every parameter is out of range (300 to 34560000)"
                     )
-                if module.params["at"]:
+                if new_at is not None:
                     attr = SnapshotPolicyPatch(
                         enabled=module.params["enabled"],
                         add_rules=[
                             PolicyRule(
-                                keep_for=module.params["keep_for"] * 1000,
-                                every=module.params["every"] * 1000,
-                                at=time_to_milliseconds(module.params["at"]),
-                                time_zone=module.params["timezone"],
+                                keep_for=new_keep_for * 1000,
+                                every=new_every * 1000,
+                                at=new_at,
+                                time_zone=new_tz,
                             )
                         ],
                     )
@@ -3632,8 +3644,8 @@ def update_snap_policy(module, blade):
                         enabled=module.params["enabled"],
                         add_rules=[
                             PolicyRule(
-                                keep_for=module.params["keep_for"] * 1000,
-                                every=module.params["every"] * 1000,
+                                keep_for=new_keep_for * 1000,
+                                every=new_every * 1000,
                             )
                         ],
                     )
