@@ -13,12 +13,11 @@ The Everpure FlashBlade collection consists of the latest versions of the FlashB
 
 ## Requirements
 
-- Ansible 2.15 or later
+- Ansible 2.16 or later
 - Everpure FlashBlade system running Purity//FB 3.3.3 or later
 - py-pure-client >=v1.67.2
 - python >=3.9
 - netaddr
-- datetime
 - pytz
 - distro
 - pycountry
@@ -78,12 +77,10 @@ There are many ways in which you can participate in the project, for example:
 
 Only the latest release of this collection is supported.
 
-As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/) or please raise a [GitHub issue](https://github.com/Everpure-Ansible/FlashBlade-Collection/issues) in the Collection repo.
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. This is the Primary Support Route for a Certified Collection.
 
-If you are a Everpure customer, you may log a support call with the Everpure Support team ([support\@purestorage.com](mailto:support@purestorage.com?subject=FlashBlade-Ansible-Collection))
+Community-Only help may be available on the [Ansible Forum](https://forum.ansible.com/) or raise a [GitHub issue](https://github.com/Everpure-Ansible/FlashBlade-Collection/issues) in the Collection repo.
 
-If you have a Red Hat Ansible support contract, as this is a Certified collection, you may log a support call with Red Hat directly.
-  
 ## Release Notes
 
 Release notes for this collection can be found [here](https://github.com/Everpure-Ansible/FlashBlade-Collection/releases)
@@ -159,4 +156,4 @@ All modules are idempotent with the exception of modules that change or set pass
 
 ## Author
 
-This collection was created in 2019 by [Simon Dodsley](@sdodsley) for, and on behalf of, the [Everpure Ansible Team](pure-ansible-team@purestorage.com)
+This collection was created in 2019 by [Simon Dodsley](https://github.com/sdodsley) for, and on behalf of, the [Everpure Ansible Team](pure-ansible-team@purestorage.com)
