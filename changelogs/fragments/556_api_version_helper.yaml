@@ -1,5 +1,5 @@
 minor_changes:
-  - purefb - Add ``get_array_api_version`` helper in ``module_utils/common.py`` that returns the highest REST API version supported by the FlashBlade as a string, using ``LooseVersion`` ordering so semantic versions like ``2.10`` rank above ``2.9``.
+  - purefb - Add ``get_rest_api_version`` helper that returns the highest REST API version supported by the FlashBlade as a string, mirroring FlashArray's ``array.get_rest_version()``.
   - purefb_s3_export_policy - Use the highest supported REST version when comparing against the minimum required API version.
   - purefb_s3acc_export - Use the highest supported REST version when comparing against the minimum required API version.
   - purefb_realm - Use the highest supported REST version when comparing against the minimum required API version.

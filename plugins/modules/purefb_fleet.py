@@ -125,8 +125,8 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.version imp
     LooseVersion,
 )
 from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
-    get_array_api_version,
     get_error_message,
+    get_rest_api_version,
 )
 import platform
 
@@ -209,7 +209,7 @@ def add_fleet_members(module, blade):
             api_token=module.params["member_api"],
             user_agent=user_agent,
         )
-        remote_api = remote_system.get_rest_version()
+        remote_api = remote_system.get_rest_api_version()
         if LooseVersion(MIN_FA_VERSION) > LooseVersion(remote_api):
             module.fail_json(
                 msg="FlashArray must be a minimum of Purity//FA 6.8.5"
@@ -345,7 +345,7 @@ def main():
         module.fail_json(msg="py-pure-client sdk is required for this module")
 
     blade = get_system(module)
-    api_version = get_array_api_version(blade)
+    api_version = get_rest_api_version(blade)
     if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(api_version):
         module.fail_json(
             msg="FlashBlade REST version not supported. "
