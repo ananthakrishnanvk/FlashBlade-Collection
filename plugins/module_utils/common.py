@@ -115,6 +115,22 @@ def get_filesystem(module, blade):
     return None
 
 
+def get_array_api_version(blade):
+    """Return the highest REST API version the FlashBlade supports as a string.
+
+    pypureclient's FlashBlade SDK has no get_rest_version() equivalent to
+    FlashArray, and blade.get_versions().items is the full list of supported
+    versions — passing that list to LooseVersion raises. Use this helper to
+    obtain a single version string suitable for LooseVersion comparisons.
+    """
+    from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+        LooseVersion,
+    )
+
+    versions = list(blade.get_versions().items)
+    return str(max(versions, key=LooseVersion))
+
+
 def human_to_bytes(size):
     """Convert human-readable byte string to bytes.
 

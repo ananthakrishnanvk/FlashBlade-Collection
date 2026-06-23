@@ -110,6 +110,7 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.version imp
     LooseVersion,
 )
 from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+    get_array_api_version,
     get_error_message,
 )
 
@@ -288,7 +289,7 @@ def main():
 
     state = module.params["state"]
     blade = get_system(module)
-    api_version = list(blade.get_versions().items)
+    api_version = get_array_api_version(blade)
     if LooseVersion(MINIMUM_API_VERSION) > LooseVersion(api_version):
         module.fail_json(
             msg="Realms are not supported. Purity//FB 4.6.1, or higher, is required."
