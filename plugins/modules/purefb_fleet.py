@@ -203,14 +203,20 @@ def add_fleet_members(module, blade):
             api_token=module.params["member_api"],
             user_agent=user_agent,
         )
+        remote_version = get_rest_api_version(remote_system)
+        if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(remote_version):
+            module.fail_json(
+                msg="Remote FlashBlade must be a minimum of REST API {0}"
+                " to join a fleet".format(MIN_REQUIRED_API_VERSION)
+            )
     else:
         remote_system = flasharray.Client(
             target=module.params["member_url"],
             api_token=module.params["member_api"],
             user_agent=user_agent,
         )
-        remote_api = remote_system.get_rest_api_version()
-        if LooseVersion(MIN_FA_VERSION) > LooseVersion(remote_api):
+        remote_version = remote_system.get_rest_version()
+        if LooseVersion(MIN_FA_VERSION) > LooseVersion(remote_version):
             module.fail_json(
                 msg="FlashArray must be a minimum of Purity//FA 6.8.5"
                 " to join a fleet containing FlashBlades"
