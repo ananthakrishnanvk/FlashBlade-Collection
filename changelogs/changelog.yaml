@@ -769,6 +769,129 @@ releases:
     fragments:
     - 540_reassignment_fix.yaml
     release_date: '2026-05-28'
+  1.26.0:
+    changes:
+      bugfixes:
+      - purefb_bucket - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_bucket - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_bucket - Stop sending context_names when destroying a bucket without
+        a context, which leaked an empty/invalid fleet context
+      - purefb_bucket_access - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_bucket_access - Only send context_names when a context is set, and
+        only default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_bucket_replica - Allow a replica link to be removed when its local
+        bucket no longer exists (https://github.com/Everpure-Ansible/FlashBlade-Collection/issues/545)
+      - purefb_bucket_replica - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_bucket_replica - Only send context_names when a context is set, and
+        only default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_connect - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_connect - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_export - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_export - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_fs - Default context to the local array name to avoid errors from an
+        empty context_names on newer Purity//FB releases
+      - purefb_fs - Fixed ``not in a fleet`` errors on standalone arrays by only sending
+        ``context_names`` when a context is set, and only defaulting the context for
+        arrays that are fleet members.
+      - purefb_fs - Restore the ``nfs_rules`` parameter, silently ignored since v1.25.0.
+        Inline NFS export rules are applied again on create and update for non-realm
+        filesystems.
+      - purefb_groupquota - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_groupquota - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_info - Fix AttributeError where the policy loop variable was overwritten
+        with `policy.name`, breaking `gather_subset=policies` (#547)
+      - purefb_lifecycle - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_lifecycle - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_policy - Create a policy rule when the client lookup returns no match
+        or an error, fixing failures adding the first rule for a client while keeping
+        the task idempotent
+      - purefb_policy - Fixed NFS export policy rules not updating when only the ``access``
+        value (e.g. root-squash to no-squash) changed; ``access`` was missing from
+        the idempotency comparison.
+      - purefb_policy - Fixed an object store access policy rule update referencing
+        a non-existent key when preserving existing source IPs.
+      - purefb_policy - Fixed policy rule updates (NFS export, SMB share, SMB client,
+        network access) resetting unspecified fields to null; patches now use merged
+        values so omitted fields are kept.
+      - purefb_policy - Fixed snapshot policy updates dropping the ``at`` time and
+        timezone (reverting to an interval-only rule) when ``every`` or ``keep_for``
+        were changed without re-specifying ``at``.
+      - purefb_policy - Only send context_names when a context is set, and only default
+        it for fleet members, avoiding empty-context errors and "not in a fleet" errors
+        on standalone arrays
+      - purefb_remote_cred - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_remote_cred - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_s3acc - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_s3acc - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_s3user - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_s3user - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_snap - Default context to the local array name to avoid errors from
+        an empty context_names on newer Purity//FB releases
+      - purefb_snap - Only send context_names when a context is set, and only default
+        it for fleet members, fixing "not in a fleet" errors on standalone arrays
+      - purefb_userpolicy - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_userpolicy - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_userquota - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_userquota - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      - purefb_virtualhost - Default context to the local array name to avoid errors
+        from an empty context_names on newer Purity//FB releases
+      - purefb_virtualhost - Only send context_names when a context is set, and only
+        default it for fleet members, fixing "not in a fleet" errors on standalone
+        arrays
+      deprecated_features:
+      - purefb_fs - The ``nfs_rules`` parameter is deprecated in favour of ``export_policy``
+        and will be removed in 2.0.0. A deprecation notice is emitted when it is used.
+      minor_changes:
+      - purefb - Add API-client token authentication as an alternative to ``api_token``,
+        via a pre-signed ``id_token`` or a ``private_key_file`` (with ``client_id``,
+        ``key_id``, ``issuer``, ``username``).
+    fragments:
+    - 543_policy_context_fix.yaml
+    - 544_context_default.yaml
+    - 546_bucket_replica_delete.yaml
+    - 547_fix_policies_info_attribute_error.yaml
+    - 550_fs_context_not_in_fleet.yaml
+    - 550_restore_nfs_rules.yaml
+    - 551_apiclient_token_auth.yaml
+    - 552_nfs_export_rule_access.yaml
+    - 553_context_not_in_fleet_sweep.yaml
+    modules:
+    - description: Manage FlashBlade S3 Export Policies
+      name: purefb_s3_export_policy
+      namespace: ''
+    - description: Manage FlashBlade Object Store Account exports
+      name: purefb_s3acc_export
+      namespace: ''
+    release_date: '2026-06-19'
   1.3.0:
     changes:
       bugfixes:
