@@ -996,13 +996,30 @@ def update_smb_share_policy(module, blade):
             if current_rule != new_rule:
                 changed = True
                 if not module.check_mode:
-                    # Patch from the merged new_rule so unspecified fields keep
-                    # their current value rather than being reset.
+                    # Preserve fields the task did not specify by falling back to
+                    # the existing rule. Use the raw string values - new_rule holds
+                    # sorted() values that are only valid for the comparison above.
                     rule = SmbSharePolicyRule(
-                        principal=new_rule["principal"],
-                        change=new_rule["change"],
-                        read=new_rule["read"],
-                        full_control=new_rule["full_control"],
+                        principal=(
+                            module.params["principal"]
+                            if module.params["principal"]
+                            else old_policy_rule.principal
+                        ),
+                        change=(
+                            module.params["change"]
+                            if module.params["change"]
+                            else old_policy_rule.change
+                        ),
+                        read=(
+                            module.params["read"]
+                            if module.params["read"]
+                            else old_policy_rule.read
+                        ),
+                        full_control=(
+                            module.params["full_control"]
+                            if module.params["full_control"]
+                            else old_policy_rule.full_control
+                        ),
                     )
                     if CONTEXT_API_VERSION in versions and module.params["context"]:
                         res = blade.patch_smb_share_policies_rules(
@@ -1606,18 +1623,30 @@ def update_smb_client_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
-                        # Patch from the merged new_rule so unspecified fields keep
-                        # their current value rather than being reset.
+                        # Preserve fields the task did not specify by falling back
+                        # to the existing rule. Use the raw string values for
+                        # client/permission - new_rule holds sorted() values that
+                        # are only valid for the comparison above, not for the SDK.
+                        rule_client = (
+                            module.params["client"]
+                            if module.params["client"]
+                            else old_policy_rule.client
+                        )
+                        rule_permission = (
+                            module.params["permission"]
+                            if module.params["permission"]
+                            else old_policy_rule.permission
+                        )
                         if SMB_ENCRYPT_API_VERSION in versions:
                             rule = SmbClientPolicyRule(
-                                client=new_rule["client"],
-                                permission=new_rule["permission"],
+                                client=rule_client,
+                                permission=rule_permission,
                                 encryption=new_rule["encryption"],
                             )
                         else:
                             rule = SmbClientPolicyRule(
-                                client=new_rule["client"],
-                                permission=new_rule["permission"],
+                                client=rule_client,
+                                permission=rule_permission,
                             )
                         if CONTEXT_API_VERSION in versions and module.params["context"]:
                             res = blade.patch_smb_client_policies_rules(
@@ -1978,10 +2007,16 @@ def update_network_access_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
-                        # Patch from the merged new_rule so unspecified fields keep
-                        # their current value rather than being reset.
+                        # Preserve fields the task did not specify by falling back
+                        # to the existing rule. Use the raw string value for client
+                        # - new_rule holds sorted() values that are only valid for
+                        # the comparison above, not for the SDK.
                         rule = NetworkAccessPolicyRule(
-                            client=new_rule["client"],
+                            client=(
+                                module.params["client"]
+                                if module.params["client"]
+                                else old_policy_rule.client
+                            ),
                             effect=new_rule["effect"],
                             interfaces=new_rule["interfaces"],
                         )
@@ -2569,19 +2604,32 @@ def update_nfs_policy(module, blade):
                 if current_rule != new_rule:
                     changed = True
                     if not module.check_mode:
-                        # Build the patch from the merged new_rule values, not the
-                        # raw module params, so fields the task did not specify keep
-                        # their current value instead of being reset to null.
+                        # Preserve fields the task did not specify by falling back
+                        # to the existing rule. Use the raw string values for
+                        # client/permission - new_rule holds sorted() values that
+                        # are only valid for the comparison above, not for the SDK.
                         rule = NfsExportPolicyRule(
-                            client=new_rule["client"],
-                            permission=new_rule["permission"],
+                            client=(
+                                module.params["client"]
+                                if module.params["client"]
+                                else old_policy_rule.client
+                            ),
+                            permission=(
+                                module.params["permission"]
+                                if module.params["permission"]
+                                else old_policy_rule.permission
+                            ),
                             access=new_rule["access"],
                             anonuid=new_rule["anonuid"],
                             anongid=new_rule["anongid"],
                             fileid_32bit=new_rule["fileid_32bit"],
                             atime=new_rule["atime"],
                             secure=new_rule["secure"],
-                            security=new_rule["security"],
+                            security=(
+                                module.params["security"]
+                                if module.params["security"]
+                                else old_policy_rule.security
+                            ),
                         )
                         if CONTEXT_API_VERSION in versions and module.params["context"]:
                             res = blade.patch_nfs_export_policies_rules(
