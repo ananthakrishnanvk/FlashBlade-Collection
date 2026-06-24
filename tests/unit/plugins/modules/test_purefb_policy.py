@@ -119,6 +119,8 @@ class TestUpdateNfsPolicyRule:
 
     def test_access_change_triggers_patch(self):
         """Changing only access (root-squash -> no-squash) must PATCH the rule."""
+        import plugins.modules.purefb_policy as pol
+
         module = _module(access="no-squash")
         blade = _blade(_existing_rule(access="root-squash"))
 
@@ -128,6 +130,11 @@ class TestUpdateNfsPolicyRule:
         # rule name targeted is "<policy>.<index>"
         call_kwargs = blade.patch_nfs_export_policies_rules.call_args[1]
         assert call_kwargs["names"] == ["project96_nfs_policy.1"]
+        # client/permission must reach the SDK as the original strings, not the
+        # sorted() char lists used only for the idempotency comparison.
+        rule_kwargs = pol.NfsExportPolicyRule.call_args[1]
+        assert rule_kwargs["client"] == "10.0.10.42"
+        assert rule_kwargs["permission"] == "rw"
         module.exit_json.assert_called_once_with(changed=True)
 
     def test_no_change_is_idempotent(self):
@@ -153,11 +160,14 @@ class TestUpdateNfsPolicyRule:
         update_nfs_policy(module, blade)
 
         blade.patch_nfs_export_policies_rules.assert_called_once()
-        # The patched rule must keep the existing anon ids, not null them out.
+        # The patched rule must keep the existing anon ids, not null them out,
+        # and client/permission must be the original strings (not sorted lists).
         rule_kwargs = pol.NfsExportPolicyRule.call_args[1]
         assert rule_kwargs["access"] == "no-squash"
         assert rule_kwargs["anonuid"] == "20000021"
         assert rule_kwargs["anongid"] == "100021"
+        assert rule_kwargs["client"] == "10.0.10.42"
+        assert rule_kwargs["permission"] == "rw"
 
 
 def _snap_rule(every=86400000, keep_for=86400000, at=None, time_zone=None):
