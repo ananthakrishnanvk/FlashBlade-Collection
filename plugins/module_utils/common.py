@@ -18,6 +18,10 @@ import re
 from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.facts.utils import get_file_content
 
+from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+    LooseVersion,
+)
+
 
 def _findstr(text, match):
     """Find first line in text containing match string.
@@ -123,9 +127,6 @@ def get_rest_api_version(blade):
     of supported versions; this helper picks the highest using LooseVersion
     ordering so the result can be fed straight into LooseVersion comparisons.
     """
-    from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
-        LooseVersion,
-    )
 
     versions = list(blade.get_versions().items)
     return str(max(versions, key=LooseVersion))
