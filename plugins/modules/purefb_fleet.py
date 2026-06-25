@@ -109,8 +109,8 @@ try:
     from pypureclient import flasharray
     from pypureclient.flashblade import (
         FleetMemberPost,
-        FleetmemberpostMember,
-        FleetmemberpostMembers,
+        FleetMemberPostMembersMember,
+        FleetMemberPostMembers,
         FleetPatch,
     )
 except ImportError:
@@ -126,6 +126,7 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.version imp
 )
 from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
     get_error_message,
+    get_rest_api_version,
 )
 import platform
 
@@ -202,14 +203,20 @@ def add_fleet_members(module, blade):
             api_token=module.params["member_api"],
             user_agent=user_agent,
         )
+        remote_version = get_rest_api_version(remote_system)
+        if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(remote_version):
+            module.fail_json(
+                msg="Remote FlashBlade must be a minimum of REST API {0}"
+                " to join a fleet".format(MIN_REQUIRED_API_VERSION)
+            )
     else:
         remote_system = flasharray.Client(
             target=module.params["member_url"],
             api_token=module.params["member_api"],
             user_agent=user_agent,
         )
-        remote_api = remote_system.get_rest_version()
-        if LooseVersion(MIN_FA_VERSION) > LooseVersion(remote_api):
+        remote_version = remote_system.get_rest_version()
+        if LooseVersion(MIN_FA_VERSION) > LooseVersion(remote_version):
             module.fail_json(
                 msg="FlashArray must be a minimum of Purity//FA 6.8.5"
                 " to join a fleet containing FlashBlades"
@@ -226,9 +233,9 @@ def add_fleet_members(module, blade):
                 fleet_names=[module.params["name"]],
                 members=FleetMemberPost(
                     members=[
-                        FleetmemberpostMembers(
+                        FleetMemberPostMembers(
                             key=fleet_key,
-                            member=FleetmemberpostMember(
+                            member=FleetMemberPostMembersMember(
                                 name=local_name, resource_type="remote-arrays"
                             ),
                         )
@@ -344,7 +351,7 @@ def main():
         module.fail_json(msg="py-pure-client sdk is required for this module")
 
     blade = get_system(module)
-    api_version = list(blade.get_versions().items)
+    api_version = get_rest_api_version(blade)
     if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(api_version):
         module.fail_json(
             msg="FlashBlade REST version not supported. "
