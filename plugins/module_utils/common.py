@@ -18,6 +18,10 @@ import re
 from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.facts.utils import get_file_content
 
+from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+    LooseVersion,
+)
+
 
 def _findstr(text, match):
     """Find first line in text containing match string.
@@ -113,6 +117,19 @@ def get_filesystem(module, blade):
         if items:
             return items[0]
     return None
+
+
+def get_rest_api_version(blade):
+    """Return the highest REST API version the FlashBlade supports as a string.
+
+    Mirrors FlashArray's ``array.get_rest_version()``, which pypureclient does
+    not expose for FlashBlade. ``blade.get_versions().items`` is the full list
+    of supported versions; this helper picks the highest using LooseVersion
+    ordering so the result can be fed straight into LooseVersion comparisons.
+    """
+
+    versions = list(blade.get_versions().items)
+    return str(max(versions, key=LooseVersion))
 
 
 def human_to_bytes(size):

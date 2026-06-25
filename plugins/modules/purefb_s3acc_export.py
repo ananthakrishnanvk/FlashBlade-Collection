@@ -122,6 +122,7 @@ from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb impo
 )
 from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
     get_error_message,
+    get_rest_api_version,
 )
 from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
     LooseVersion,
@@ -251,7 +252,7 @@ def main():
         module.fail_json(msg="py-pure-client sdk is required for this module")
 
     blade = get_system(module)
-    api_version = list(blade.get_versions().items)
+    api_version = get_rest_api_version(blade)
     if LooseVersion(MIN_REQUIRED_API_VERSION) > LooseVersion(api_version):
         module.fail_json(
             msg="FlashBlade REST version not supported. "
