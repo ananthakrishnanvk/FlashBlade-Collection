@@ -95,7 +95,7 @@ RETURN = r"""
 
 HAS_PYPURECLIENT = True
 try:
-    from pypureclient.flashblade import Dns, DnsPatch, DnsPost, Reference
+    from pypureclient.flashblade import Dns, DnsPost, Reference
 except ImportError:
     HAS_PYPURECLIENT = False
 
@@ -149,7 +149,7 @@ def create_dns(module, blade):
         if not module.check_mode:
             res = blade.post_dns(
                 names=["management"],
-                dns=DnsPatch(
+                dns=DnsPost(
                     domain=module.params["domain"],
                     nameservers=module.params["nameservers"][0:3],
                 ),
