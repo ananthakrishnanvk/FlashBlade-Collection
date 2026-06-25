@@ -88,7 +88,7 @@ HAS_PYPURECLIENT = True
 try:
     from pypureclient.flashblade import (
         ObjectStoreRemoteCredentialsPost,
-        ObjectStoreRemoteCredentialsPatch,
+        ObjectStoreRemoteCredentials,
     )
 except ImportError:
     HAS_PYPURECLIENT = False
@@ -196,7 +196,7 @@ def update_credential(module, blade):
     api_version = list(blade.get_versions().items)
     if not module.check_mode:
         remote_cred = module.params["target"] + "/" + module.params["name"]
-        new_attr = ObjectStoreRemoteCredentialsPatch(
+        new_attr = ObjectStoreRemoteCredentials(
             access_key_id=module.params["access_key"],
             secret_access_key=module.params["secret"],
         )
