@@ -109,8 +109,8 @@ try:
     from pypureclient import flasharray
     from pypureclient.flashblade import (
         FleetMemberPost,
-        FleetmemberpostMember,
-        FleetmemberpostMembers,
+        FleetMemberPostMembersMember,
+        FleetMemberPostMembers,
         FleetPatch,
     )
 except ImportError:
@@ -233,9 +233,9 @@ def add_fleet_members(module, blade):
                 fleet_names=[module.params["name"]],
                 members=FleetMemberPost(
                     members=[
-                        FleetmemberpostMembers(
+                        FleetMemberPostMembers(
                             key=fleet_key,
-                            member=FleetmemberpostMember(
+                            member=FleetMemberPostMembersMember(
                                 name=local_name, resource_type="remote-arrays"
                             ),
                         )
