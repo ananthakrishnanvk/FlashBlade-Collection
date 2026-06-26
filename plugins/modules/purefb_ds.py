@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -27,7 +27,7 @@ description:
   will always cause a change, even if the password given isn't different from
   the current. This makes this part of the module non-idempotent..
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -107,54 +107,54 @@ options:
     type: str
     version_added: 1.23.0
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Delete existing management directory service
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: management
     state: absent
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create NFS directory service (disabled)
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: nfs
-    uri: "ldaps://lab.purestorage.com"
-    base_dn: "DC=lab,DC=purestorage,DC=com"
+    uri: "ldaps://lab.everpure.com"
+    base_dn: "DC=lab,DC=everpure,DC=com"
     bind_user: Administrator
     bind_password: password
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Enable existing SMB directory service
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstypr: smb
     enable: true
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Disable existing management directory service
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: management
     enable: false
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create NFS directory service (LDAP-based) - default internal server
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: nfs
     enable: true
-    uri: "ldaps://lab.purestorage.com"
-    base_dn: "DC=lab,DC=purestorage,DC=com"
+    uri: "ldaps://lab.everpure.com"
+    base_dn: "DC=lab,DC=everpure,DC=com"
     bind_user: Administrator
     bind_password: password
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create NFS directory service (NIS based) - alternate internal server
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: nfs
     nfs_server: acme1
     enable: true
@@ -166,21 +166,21 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Test array management directory service
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: management
     state: test
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Test default nfs directory service
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: nfs
     state: test
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Test NFS directory service for internal server fred
-  purestorage.flashblade.purefb_ds:
+  everpure.flashblade.purefb_ds:
     dstype: nfs
     nfs_server: fred
     state: test
@@ -202,11 +202,11 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

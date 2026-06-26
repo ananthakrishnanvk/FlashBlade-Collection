@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Configure FlashBlade  Management Directory Service Roles
 description:
 - Set or erase directory services role configurations.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -55,19 +55,19 @@ options:
     - Common Names should not exceed 64 characters in length.
     type: str
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Delete existing array_admin directory service role
-  purestorage.flashblade.purefb_dsrole:
+  everpure.flashblade.purefb_dsrole:
     role: array_admin
     state: absent
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 
 - name: Create array_admin directory service role
-  purestorage.flashblade.purefb_dsrole:
+  everpure.flashblade.purefb_dsrole:
     role: array_admin
     group_base: "OU=PureGroups,OU=SANManagers"
     group: pureadmins
@@ -75,7 +75,7 @@ EXAMPLES = r"""
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 
 - name: Update ops_admin directory service role
-  purestorage.flashblade.purefb_dsrole:
+  everpure.flashblade.purefb_dsrole:
     role: ops_admin
     group_base: "OU=PureGroups"
     group: opsgroup
@@ -94,11 +94,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

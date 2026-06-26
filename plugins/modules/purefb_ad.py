@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - FlashBlade allows the creation of one AD computer account, or joining of an
   existing AD computer account.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -134,12 +134,12 @@ options:
     type: bool
     default: false
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create new AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     server: local_server
     computer: FLASHBLADE
@@ -163,7 +163,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Connect to existing AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     computer: FLASHBLADE
     domain: acme.com
@@ -178,7 +178,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Update existing AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     server: local_server
     encryption:
@@ -193,27 +193,27 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete local AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     local_only: true
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Fully delete AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Test AD account
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     state: test
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Rotate AD account keytabs
-  purestorage.flashblade.purefb_ad:
+  everpure.flashblade.purefb_ad:
     name: ad_account
     state: rotate
     fb_url: 10.10.10.2
@@ -235,11 +235,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2019, Simon Dodsley (simon@purestorage.com)
+# (c) 2019, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -19,7 +19,7 @@ DOCUMENTATION = r"""
 module: purefb_proxy
 version_added: '1.0.0'
 author:
-  - Everpure ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+  - Everpure ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 short_description: Configure FlashBlade phonehome HTTPs proxy settings
 description:
 - Set or erase configuration for the phonehome proxy settings.
@@ -46,19 +46,19 @@ options:
     type: bool
     version_added: '1.11.0'
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Delete exisitng proxy settings
-  purestorage.flashblade.purefb_proxy:
+  everpure.flashblade.purefb_proxy:
     state: absent
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 
 - name: Set proxy settings
-  purestorage.flashblade.purefb_proxy:
-    host: purestorage.com
+  everpure.flashblade.purefb_proxy:
+    host: everpuredata.com
     port: 8080
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
@@ -75,14 +75,14 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

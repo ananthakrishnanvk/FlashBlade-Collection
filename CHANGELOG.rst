@@ -1,8 +1,29 @@
-====================================
-Purestorage.Flashblade Release Notes
-====================================
+=================================
+Everpure.Flashblade Release Notes
+=================================
 
 .. contents:: Topics
+
+v1.27.0
+=======
+
+Minor Changes
+-------------
+
+- purefb - Add ``get_rest_api_version`` helper that returns the highest REST API version supported by the FlashBlade as a string, mirroring FlashArray's ``array.get_rest_version()``.
+- purefb_fleet - Use the highest supported REST version when comparing against the minimum required API version.
+- purefb_realm - Use the highest supported REST version when comparing against the minimum required API version.
+- purefb_s3_export_policy - Use the highest supported REST version when comparing against the minimum required API version.
+- purefb_s3acc_export - Use the highest supported REST version when comparing against the minimum required API version.
+
+Bugfixes
+--------
+
+- purefb_dns - Fix incorrect ``DnsPatch`` class reference (now ``DnsPost``) that made the module wrongly report py-pure-client as not installed
+- purefb_policy - Fixed a regression where updating an existing NFS export, SMB share, SMB client or network access policy rule failed with a pydantic ``str type expected`` error.
+- purefb_policy - Rule updates now send the original string values to the API rather than the sorted values used only for the idempotency comparison.
+- purefb_realm - Fixed incorrect documentation for ``purefb_realm`` module that was causing confusion about the required parameters. Changed from fa_url to fb_url
+- purefb_remote_cred - Fix reference to non-existent ``ObjectStoreRemoteCredentialsPatch`` class in py-pure-client, which caused the module to incorrectly report that the SDK was not installed
 
 v1.26.0
 =======
@@ -64,8 +85,8 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_s3_export_policy - Manage FlashBlade S3 Export Policies
-- purestorage.flashblade.purefb_s3acc_export - Manage FlashBlade Object Store Account exports
+- everpure.flashblade.purefb_s3_export_policy - Manage FlashBlade S3 Export Policies
+- everpure.flashblade.purefb_s3acc_export - Manage FlashBlade Object Store Account exports
 
 v1.25.1
 =======
@@ -195,8 +216,8 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_export - Manage filesystem exports on Everpure FlashBlade`
-- purestorage.flashblade.purefb_realm - Manage realms on Everpure FlashBlades
+- everpure.flashblade.purefb_export - Manage filesystem exports on Everpure FlashBlade`
+- everpure.flashblade.purefb_realm - Manage realms on Everpure FlashBlades
 
 v1.24.0
 =======
@@ -306,7 +327,7 @@ Minor Changes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_kmip - Manage FlashBlade KMIP server objects
+- everpure.flashblade.purefb_kmip - Manage FlashBlade KMIP server objects
 
 v1.21.2
 =======
@@ -378,9 +399,9 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_bucket_access - Manage FlashBlade bucket access policies
-- purestorage.flashblade.purefb_fleet - Manage Fusion Fleet
-- purestorage.flashblade.purefb_server - Manage FlashBlade servers
+- everpure.flashblade.purefb_bucket_access - Manage FlashBlade bucket access policies
+- everpure.flashblade.purefb_fleet - Manage Fusion Fleet
+- everpure.flashblade.purefb_server - Manage FlashBlade servers
 
 v1.19.2
 =======
@@ -430,7 +451,7 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_saml - Manage FlashBlade SAML2 service and identity providers
+- everpure.flashblade.purefb_saml - Manage FlashBlade SAML2 service and identity providers
 
 v1.18.0
 =======
@@ -500,7 +521,7 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_hardware - Manage FlashBlade Hardware
+- everpure.flashblade.purefb_hardware - Manage FlashBlade Hardware
 
 v1.14.0
 =======
@@ -581,7 +602,7 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_pingtrace - Employ the internal FlashBlade ping and trace mechanisms
+- everpure.flashblade.purefb_pingtrace - Employ the internal FlashBlade ping and trace mechanisms
 
 v1.10.0
 =======
@@ -608,8 +629,8 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_messages - List FlashBlade Alert Messages
-- purestorage.flashblade.purefb_tz - Configure Pure Storage FlashBlade timezone
+- everpure.flashblade.purefb_messages - List FlashBlade Alert Messages
+- everpure.flashblade.purefb_tz - Configure Pure Storage FlashBlade timezone
 
 v1.9.0
 ======
@@ -674,9 +695,9 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_groupquota - Manage filesystem group quotas
-- purestorage.flashblade.purefb_lag - Manage FlashBlade Link Aggregation Groups
-- purestorage.flashblade.purefb_userquota - Manage filesystem user quotas
+- everpure.flashblade.purefb_groupquota - Manage filesystem group quotas
+- everpure.flashblade.purefb_lag - Manage FlashBlade Link Aggregation Groups
+- everpure.flashblade.purefb_userquota - Manage filesystem user quotas
 
 v1.6.0
 ======
@@ -698,13 +719,13 @@ Minor Changes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_ad - Manage FlashBlade Active Directory Account
-- purestorage.flashblade.purefb_apiclient - Manage FlashBlade API Clients
-- purestorage.flashblade.purefb_eula - Sign Pure Storage FlashBlade EULA
-- purestorage.flashblade.purefb_keytabs - Manage FlashBlade Kerberos Keytabs
-- purestorage.flashblade.purefb_timeout - Configure Pure Storage FlashBlade GUI idle timeout
-- purestorage.flashblade.purefb_userpolicy - Manage FlashBlade Object Store User Access Policies
-- purestorage.flashblade.purefb_virtualhost - Manage FlashBlade Object Store Virtual Hosts
+- everpure.flashblade.purefb_ad - Manage FlashBlade Active Directory Account
+- everpure.flashblade.purefb_apiclient - Manage FlashBlade API Clients
+- everpure.flashblade.purefb_eula - Sign Pure Storage FlashBlade EULA
+- everpure.flashblade.purefb_keytabs - Manage FlashBlade Kerberos Keytabs
+- everpure.flashblade.purefb_timeout - Configure Pure Storage FlashBlade GUI idle timeout
+- everpure.flashblade.purefb_userpolicy - Manage FlashBlade Object Store User Access Policies
+- everpure.flashblade.purefb_virtualhost - Manage FlashBlade Object Store Virtual Hosts
 
 v1.5.0
 ======
@@ -761,11 +782,11 @@ Bugfixes
 New Modules
 -----------
 
-- purestorage.flashblade.purefb_banner - Configure Pure Storage FlashBlade GUI and SSH MOTD message
-- purestorage.flashblade.purefb_certgrp - Manage FlashBlade Certifcate Groups
-- purestorage.flashblade.purefb_certs - Manage FlashBlade SSL Certifcates
-- purestorage.flashblade.purefb_lifecycle - Manage FlashBlade object lifecycles
-- purestorage.flashblade.purefb_syslog - Configure Pure Storage FlashBlade syslog settings
+- everpure.flashblade.purefb_banner - Configure Pure Storage FlashBlade GUI and SSH MOTD message
+- everpure.flashblade.purefb_certgrp - Manage FlashBlade Certifcate Groups
+- everpure.flashblade.purefb_certs - Manage FlashBlade SSL Certifcates
+- everpure.flashblade.purefb_lifecycle - Manage FlashBlade object lifecycles
+- everpure.flashblade.purefb_syslog - Configure Pure Storage FlashBlade syslog settings
 
 v1.3.0
 ======

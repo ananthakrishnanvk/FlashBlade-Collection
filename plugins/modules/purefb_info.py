@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2019, Simon Dodsley (simon@purestorage.com)
+# (c) 2019, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or
 # https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -27,7 +27,7 @@ description:
     groups and volume counts. Additional information can be collected
     based on the configured set of arguements.
 author:
-  - Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+  - Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   gather_subset:
     description:
@@ -41,12 +41,12 @@ options:
     elements: str
     default: minimum
 extends_documentation_fragment:
-  - purestorage.flashblade.purestorage.fb
+  - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: collect default set of info
-  purestorage.flashblade.purefb_info:
+  everpure.flashblade.purefb_info:
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
   register: blade_info
@@ -55,7 +55,7 @@ EXAMPLES = r"""
     msg: "{{ blade_info['purefb_info']['default'] }}"
 
 - name: collect configuration and capacity info
-  purestorage.flashblade.purefb_info:
+  everpure.flashblade.purefb_info:
     gather_subset:
       - config
     fb_url: 10.10.10.2
@@ -66,7 +66,7 @@ EXAMPLES = r"""
     msg: "{{ blade_info['purefb_info']['config'] }}"
 
 - name: collect all info
-  purestorage.flashblade.purefb_info:
+  everpure.flashblade.purefb_info:
     gather_subset:
       - all
     fb_url: 10.10.10.2
@@ -86,11 +86,11 @@ purefb_info:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.time_utils import (
     milliseconds_to_time,
 )
 from datetime import datetime, timezone

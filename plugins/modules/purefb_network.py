@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Simon Dodsley (simon@purestorage.com)
+# (c) 2017, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -26,7 +26,7 @@ description:
     - When creating a network interface a subnet must already exist with
       a network prefix that covers the IP address of the interface being
       created.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -60,12 +60,12 @@ options:
     default: vip
     type: str
 extends_documentation_fragment:
-    - purestorage.flashblade.purestorage.fb
+    - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new network interface named foo
-  purestorage.flashblade.purefb_network:
+  everpure.flashblade.purefb_network:
     name: foo
     address: 10.21.200.23
     state: present
@@ -73,7 +73,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Change IP address of network interface named foo
-  purestorage.flashblade.purefb_network:
+  everpure.flashblade.purefb_network:
     name: foo
     state: present
     address: 10.21.200.123
@@ -81,7 +81,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete network interface named foo
-  purestorage.flashblade.purefb_network:
+  everpure.flashblade.purefb_network:
     name: foo
     state: absent
     fb_url: 10.10.10.2
@@ -98,11 +98,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

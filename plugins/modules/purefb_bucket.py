@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Simon Dodsley (simon@purestorage.com)
+# (c) 2017, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ version_added: "1.0.0"
 short_description:  Manage Object Store Buckets on a  Everpure FlashBlade.
 description:
     - This module managess object store (s3) buckets on Everpure FlashBlade.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -155,12 +155,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new bucket named foo in account bar
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     quota: 10G
     hard_limit: false
@@ -169,7 +169,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Update bucket foo in account bar with new quota
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     quota: 500B
     hard_limit: true
@@ -178,7 +178,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Remove quota limits from bucket named foo in account bar
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     quota: 0
     account: bar
@@ -186,7 +186,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete bucket named foo in account bar
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     account: bar
     state: absent
@@ -194,7 +194,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Change bucket versioning state
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     account: bar
     versioning: enabled
@@ -202,7 +202,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Recover deleted bucket named foo in account bar
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     account: bar
     state: present
@@ -210,7 +210,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Eradicate bucket named foo in account bar
-  purestorage.flashblade.purefb_bucket:
+  everpure.flashblade.purefb_bucket:
     name: foo
     account: bar
     state: absent
@@ -239,11 +239,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     human_to_bytes,
     get_error_message,
 )

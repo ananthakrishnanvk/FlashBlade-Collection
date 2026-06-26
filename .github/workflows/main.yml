@@ -58,9 +58,9 @@ jobs:
     - name: Run sanity tests
       run: |
         pwd
-        mkdir -p ansible_collections/purestorage/flashblade
-        rsync -av . ansible_collections/purestorage/flashblade --exclude ansible_collection/purestorage/flashblade
-        cd ansible_collections/purestorage/flashblade
+        mkdir -p ansible_collections/everpure/flashblade
+        rsync -av . ansible_collections/everpure/flashblade --exclude ansible_collection/everpure/flashblade
+        cd ansible_collections/everpure/flashblade
         ansible-test sanity -v --color --python ${{ matrix.python-version }} --docker
 
   unit-tests:

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2024, Simon Dodsley (simon@purestorage.com)
+# (c) 2024, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage FlashBlade SSL Certificates
 description:
 - Create, delete, import and export FlashBlade SSL Certificates
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -142,12 +142,12 @@ options:
     - Alternative names may be IP addresses, DNS names, or URIs.
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create self-signed SSL certifcate foo
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     name: foo
     key_size: 4096
     country: US
@@ -159,14 +159,14 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete SSL certificate foo
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     name: foo
     state: absent
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Request CSR
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     name: foo
     state: sign
     export_file: <filepath>
@@ -174,7 +174,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Request CSR with updated fields
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     name: foo
     state: sign
     export_file: <filepath>
@@ -183,14 +183,14 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Regenerate key for self-signed SSL foo
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     generate: true
     name: foo
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Import SSL Cert foo and Private Key
-  purestorage.flashblade.purefb_certs:
+  everpure.flashblade.purefb_certs:
     state: import
     name: foo
     certificate: "{{lookup('file', 'example.crt') }}"
@@ -221,11 +221,11 @@ except ImportError:
 
 import re
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

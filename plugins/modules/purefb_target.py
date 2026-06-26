@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,9 +22,9 @@ short_description: Manage remote S3-capable targets for a FlashBlade
 description:
 - Manage remote S3-capable targets for a FlashBlade system
 - Use this for non-FlashBlade targets.
-- Use I(purestorage.flashblade.purefb_connect) for FlashBlade targets.
+- Use I(everpure.flashblade.purefb_connect) for FlashBlade targets.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -42,18 +42,18 @@ options:
     - Address of S3-capable target (IP or FQDN)
     type: str
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create a connection to remote S3-capable target
-  purestorage.flashblade.purefb_target:
+  everpure.flashblade.purefb_target:
     name: target_1
     address: 10.10.10.20
     fb_url: 10.10.10.2
     api_token: T-89faa581-c668-483d-b77d-23c5d88ba35c
 - name: Delete connection to remote S3-capable system
-  purestorage.flashblade.purefb_target:
+  everpure.flashblade.purefb_target:
     state: absent
     name: target_1
     target_api: 9c0b56bc-f941-f7a6-9f85-dcc3e9a8f7d6
@@ -71,11 +71,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

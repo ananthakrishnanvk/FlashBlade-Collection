@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2024 Simon Dodsley, <simon@purestorage.com>
+# Copyright (c) 2024 Simon Dodsley, <simon@everpuredata.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -18,7 +18,7 @@ import re
 from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.facts.utils import get_file_content
 
-from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.version import (
     LooseVersion,
 )
 

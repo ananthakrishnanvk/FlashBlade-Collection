@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage FlashBlade Hardware
 description:
 - Enable or disable FlashBlade visual identification lights and set connector parameters
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -46,12 +46,12 @@ options:
     type: int
     choices: [ 1, 4 ]
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Set connector to be 4 x 40Gb ports
-  purestorage.flashblade.purefb_hardware:
+  everpure.flashblade.purefb_hardware:
     name: "CH1.FM1.ETH1"
     speed: 40
     ports: 4
@@ -59,14 +59,14 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Enable identification LED
-  purestorage.flashblade.purefb_hardware:
+  everpure.flashblade.purefb_hardware:
     name: "CH1.FB1"
     enabled: true
     fb_url: 10.10.10.2
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Disable identification LED
-  purestorage.flashblade.purefb_hardware:
+  everpure.flashblade.purefb_hardware:
     name: "CH1.FB1"
     enabled: false
     fb_url: 10.10.10.2
@@ -83,11 +83,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

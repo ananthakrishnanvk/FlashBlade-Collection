@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ version_added: '1.0.0'
 short_description:  Manage filesystem replica links between Everpure FlashBlades
 description:
     - This module manages filesystem replica links between Everpure FlashBlades.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -60,12 +60,12 @@ options:
     type: bool
     default: false
 extends_documentation_fragment:
-    - purestorage.flashblade.purestorage.fb
+    - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new filesystem replica from foo to bar on arrayB
-  purestorage.flashblade.purefb_fs_replica:
+  everpure.flashblade.purefb_fs_replica:
     name: foo
     target_array: arrayB
     target_fs: bar
@@ -75,14 +75,14 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Add new snapshot policy to exisitng filesystem replica link
-  purestorage.flashblade.purefb_fs_replica:
+  everpure.flashblade.purefb_fs_replica:
     name: foo
     policy: weekly
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete snapshot policy from filesystem replica foo
-  purestorage.flashblade.purefb_fs_replica:
+  everpure.flashblade.purefb_fs_replica:
     name: foo
     policy: weekly
     state: absent
@@ -100,11 +100,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

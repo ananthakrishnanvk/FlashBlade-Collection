@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2024, Simon Dodsley (simon@purestorage.com)
+# (c) 2024, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ description:
 - Set or erase configuration for the DNS settings.
 - Nameservers provided will overwrite any existing nameservers.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -60,13 +60,13 @@ options:
     choices: [ management, data ]
     default: data
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Set managemnt DNS settings
-  purestorage.flashblade.purefb_dns:
-    domain: purestorage.com
+  everpure.flashblade.purefb_dns:
+    domain: everpuredata.com
     nameservers:
       - 8.8.8.8
       - 8.8.4.4
@@ -74,15 +74,15 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Delete exisitng management DNS settings
-  purestorage.flashblade.purefb_dns:
+  everpure.flashblade.purefb_dns:
     state: absent
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Set DNS settings with alternate name
-  purestorage.flashblade.purefb_dns:
+  everpure.flashblade.purefb_dns:
     name: server1
-    domain: purestorage.com
+    domain: everpuredata.com
     nameservers:
       - 8.8.8.8
       - 8.8.4.4
@@ -100,11 +100,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     remove_duplicates,
     get_error_message,
 )

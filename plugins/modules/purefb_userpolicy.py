@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage FlashBlade Object Store User Access Policies
 description:
 - Add or Remove FlashBlade Object Store Access Policies for Account User
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -56,12 +56,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: List existng ruser access policies for a specific user
-  purestorage.flashblade.purefb_userpolicy:
+  everpure.flashblade.purefb_userpolicy:
     state: show
     account: foo
     name: bar
@@ -70,14 +70,14 @@ EXAMPLES = r"""
   register: policy_list
 
 - name: List all available user access policies
-  purestorage.flashblade.purefb_userpolicy:
+  everpure.flashblade.purefb_userpolicy:
     state: show
     fb_url: 10.10.10.2
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
   register: policy_list
 
 - name: Add user access policies to account user foo/bar
-  purestorage.flashblade.purefb_userpolicy:
+  everpure.flashblade.purefb_userpolicy:
     name: bar
     account: foo
     policy:
@@ -87,7 +87,7 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Delete user access policies to account user foo/bar
-  purestorage.flashblade.purefb_userpolicy:
+  everpure.flashblade.purefb_userpolicy:
     name: bar
     account: foo
     policy:
@@ -110,11 +110,11 @@ policy_list:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2025, Simon Dodsley (simon@purestorage.com)
+# (c) 2025, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - This modules allows the management of both bucket access and cross-origin
   resource sharing policies and their associated rules.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -146,26 +146,26 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create a bucket access policy rule for bucket bar
-  purestorage.flashblade.purefb_bucket_policy:
+  everpure.flashblade.purefb_bucket_policy:
     rule: foo
     name: bar
     policy_type: access
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a CORS policy rule for bucket bar
-  purestorage.flashblade.purefb_bucket_policy:
+  everpure.flashblade.purefb_bucket_policy:
     rule: foo
     name: bar
     policy_type: cors
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete bucket policy rule foo from bucket bar
-  purestorage.flashblade.purefb_bucket_policy:
+  everpure.flashblade.purefb_bucket_policy:
     rule: foo
     name: bar
     policy_type: access
@@ -173,7 +173,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete all bucket policy rules from bucket bar
-  purestorage.flashblade.purefb_bucket_policy:
+  everpure.flashblade.purefb_bucket_policy:
     name: bar
     policy_type: access
     state: absent
@@ -196,11 +196,11 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

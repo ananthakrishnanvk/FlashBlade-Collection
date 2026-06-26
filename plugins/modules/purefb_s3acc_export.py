@@ -27,7 +27,7 @@ description:
 - The account export is uniquely identified by the (I(account), I(server))
   pair.
 author:
-- Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -65,12 +65,12 @@ options:
     type: str
     default: ""
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Export account acme on server fb-01 using policy acme-export
-  purestorage.flashblade.purefb_s3acc_export:
+  everpure.flashblade.purefb_s3acc_export:
     account: acme
     server: fb-01
     policy: acme-export
@@ -78,7 +78,7 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Disable an existing account export
-  purestorage.flashblade.purefb_s3acc_export:
+  everpure.flashblade.purefb_s3acc_export:
     account: acme
     server: fb-01
     enabled: false
@@ -86,7 +86,7 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Re-point an existing account export at a different policy
-  purestorage.flashblade.purefb_s3acc_export:
+  everpure.flashblade.purefb_s3acc_export:
     account: acme
     server: fb-01
     policy: acme-export-v2
@@ -94,7 +94,7 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Delete an account export
-  purestorage.flashblade.purefb_s3acc_export:
+  everpure.flashblade.purefb_s3acc_export:
     account: acme
     server: fb-01
     state: absent
@@ -116,15 +116,15 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
     get_rest_api_version,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.version import (
     LooseVersion,
 )
 

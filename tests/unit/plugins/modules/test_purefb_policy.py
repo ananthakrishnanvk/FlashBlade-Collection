@@ -25,23 +25,23 @@ sys.modules["termios"] = mock_termios
 sys.modules["tty"] = MagicMock()
 
 sys.modules["ansible_collections"] = MagicMock()
-sys.modules["ansible_collections.purestorage"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade.plugins"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade.plugins.module_utils"] = (
+sys.modules["ansible_collections.everpure"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade.plugins"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils"] = (
+    MagicMock()
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.purefb"] = (
+    MagicMock()
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.common"] = (
+    MagicMock()
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.version"] = (
     MagicMock()
 )
 sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.purefb"
-] = MagicMock()
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.common"
-] = MagicMock()
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.version"
-] = MagicMock()
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils"
+    "ansible_collections.everpure.flashblade.plugins.module_utils.time_utils"
 ] = MagicMock()
 
 from plugins.modules.purefb_policy import (

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Create or delete FlashBlade Object Store account users
 description:
 - Create or delete object store account users on a Pure Stoage FlashBlade.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -79,7 +79,7 @@ options:
   policy:
     description:
     - User Access Policies to be assigned to user on creation
-    - To amend policies use the I(purestorage.flashblade.purefb_userpolicy) module
+    - To amend policies use the I(everpure.flashblade.purefb_userpolicy) module
     - If not specified, I(pure\:policy/full-access) will be added
     type: list
     elements: str
@@ -93,12 +93,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create object store user (with access ID and key) foo in account bar
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     access_key: true
@@ -110,7 +110,7 @@ EXAMPLES = r"""
     msg: "S3 User: {{ result['s3user_info'] }}"
 
 - name: Create object store user (with access ID and key) foo in account bar with access policy
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     access_key: true
@@ -120,7 +120,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create object store user foo using imported key/secret in account bar
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     imported_key: "PSABSSZRHPMEDKHMAAJPJBONPJGGDDAOFABDGLBJLHO"
@@ -129,7 +129,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete object store user foo in account bar
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     state: absent
@@ -137,7 +137,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Change state of object store access key to disabled
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     key_name: PSFBSAZRDHFKAMIEGIBLIEDDOFLHGEEEEFCBPBFCLJ
@@ -147,7 +147,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete object store access key
-  purestorage.flashblade.purefb_s3user:
+  everpure.flashblade.purefb_s3user:
     name: foo
     account: bar
     key_name: PSFBSAZRDHFKAMIEGIBLIEDDOFLHGEEEEFCBPBFCLJ
@@ -168,11 +168,11 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

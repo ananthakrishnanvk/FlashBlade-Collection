@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Simon Dodsley (simon@purestorage.com)
+# (c) 2017, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ version_added: "1.0.0"
 short_description:  Manage network subnets in a Everpure FlashBlade
 description:
     - This module manages network subnets on Everpure FlashBlade.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -68,12 +68,12 @@ options:
     default: 0
     type: int
 extends_documentation_fragment:
-    - purestorage.flashblade.purestorage.fb
+    - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new network subnet named foo
-  purestorage.flashblade.purefb_subnet:
+  everpure.flashblade.purefb_subnet:
     name: foo
     prefix: "10.21.200.3/24"
     gateway: 10.21.200.1
@@ -85,7 +85,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Change configuration of existing subnet foo
-  purestorage.flashblade.purefb_subnet:
+  everpure.flashblade.purefb_subnet:
     name: foo
     state: present
     prefix: "10.21.100.3/24"
@@ -96,7 +96,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete network subnet named foo
-  purestorage.flashblade.purefb_subnet:
+  everpure.flashblade.purefb_subnet:
     name: foo
     state: absent
     fb_url: 10.10.10.2
@@ -120,11 +120,11 @@ except ImportError:
     HAS_NETADDR = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 
