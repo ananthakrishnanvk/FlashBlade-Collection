@@ -60,27 +60,27 @@ EXAMPLES = r"""
     name: foo
     qos_policy: realm1_qos
     iops_qos: 100
-    fa_url: 10.10.10.2
+    fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Destroy realm
   purestorage.flashblade.purefb_realm:
     name: foo
-    fa_url: 10.10.10.2
+    fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
     state: absent
 
 - name: Recover deleted realm
   purestorage.flashblade.purefb_realm:
     name: foo
-    fa_url: 10.10.10.2
+    fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Destroy and Eradicate realm
   purestorage.flashblade.purefb_realm:
     name: foo
     eradicate: true
-    fa_url: 10.10.10.2
+    fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
     state: absent
 
@@ -88,7 +88,7 @@ EXAMPLES = r"""
   purestorage.flashblade.purefb_realm:
     name: foo
     rename: bar
-    fa_url: 10.10.10.2
+    fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 """
 
