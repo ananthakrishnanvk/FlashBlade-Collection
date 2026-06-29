@@ -1,0 +1,2 @@
+bugfixes:
+  - purefb_realm - Fix required field ``without_default_access_list`` for post_realms. The py-pure-client requires without_default_access_list to post a new realm.
