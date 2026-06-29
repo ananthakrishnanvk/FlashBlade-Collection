@@ -170,7 +170,7 @@ def make_realm(module, blade):
     if not module.check_mode:
         res = blade.post_realms(
             names=[module.params["name"]],
-            without_default_access_list=[module.params["without_default_access_list"]],
+            without_default_access_list=module.params["without_default_access_list"],
         )
         if res.status_code != 200:
             module.fail_json(
@@ -288,8 +288,8 @@ def main():
     argument_spec.update(
         dict(
             name=dict(type="str", required=True),
-            state=dict(type="str", default="present", choices=["absent", "present"]),
             without_default_access_list=dict(type="bool", required=True),
+            state=dict(type="str", default="present", choices=["absent", "present"]),
             qos_policy=dict(type="str"),
             eradicate=dict(type="bool", default=False),
             rename=dict(type="str"),
