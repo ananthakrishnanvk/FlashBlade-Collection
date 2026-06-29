@@ -102,6 +102,7 @@ class TestPurefbRealm:
         mock_module.fail_json = Mock(side_effect=SystemExit)
         mock_module.params = {
             "name": "test-realm",
+            "without_default_access_list": True,
             "state": "present",
             "qos_policy": None,
             "eradicate": False,
@@ -164,6 +165,7 @@ class TestPurefbRealm:
         mock_module.fail_json = Mock(side_effect=SystemExit)
         mock_module.params = {
             "name": "test-realm",
+            "without_default_access_list": True,
             "state": "present",
             "qos_policy": "test-qos-policy",
             "eradicate": False,
@@ -549,6 +551,7 @@ class TestPurefbRealm:
         mock_module.fail_json = Mock(side_effect=SystemExit)
         mock_module.params = {
             "name": "test-realm",
+            "without_default_access_list": True,
             "state": "present",
             "qos_policy": None,
             "eradicate": False,
@@ -604,6 +607,7 @@ class TestPurefbRealm:
         mock_module.fail_json = Mock(side_effect=SystemExit)
         mock_module.params = {
             "name": "test-realm",
+            "without_default_access_list": True,
             "state": "present",
             "qos_policy": None,
             "eradicate": False,
