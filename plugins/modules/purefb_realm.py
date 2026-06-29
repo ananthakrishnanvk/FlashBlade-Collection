@@ -30,6 +30,12 @@ options:
     - This has to be unique and not equal to any existing realm or pod.
     type: str
     required: true
+  without_default_access_list:
+    description:
+      - This required option ensures a realm is created with or without any resource accesses.
+      - Only used when creating a new Realm.
+    type: bool
+    required: true
   state:
     description:
     - Define whether the realm should exist or not.
@@ -58,6 +64,7 @@ EXAMPLES = r"""
 - name: Create new realm
   purestorage.flashblade.purefb_realm:
     name: foo
+    without_default_access_list: true
     qos_policy: realm1_qos
     iops_qos: 100
     fb_url: 10.10.10.2
@@ -161,7 +168,10 @@ def make_realm(module, blade):
     """Create Realm"""
     changed = True
     if not module.check_mode:
-        res = blade.post_realms(names=[module.params["name"]])
+        res = blade.post_realms(
+            names=[module.params["name"]],
+            without_default_access_list=[module.params["without_default_access_list"]],
+        )
         if res.status_code != 200:
             module.fail_json(
                 msg="Creation of realm {0} failed. Error: {1}".format(
@@ -279,6 +289,7 @@ def main():
         dict(
             name=dict(type="str", required=True),
             state=dict(type="str", default="present", choices=["absent", "present"]),
+            without_default_access_list=dict(type="bool", required=True),
             qos_policy=dict(type="str"),
             eradicate=dict(type="bool", default=False),
             rename=dict(type="str"),
