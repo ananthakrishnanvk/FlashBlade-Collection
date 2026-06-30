@@ -32,10 +32,11 @@ options:
     required: true
   without_default_access_list:
     description:
-      - This required option ensures a realm is created with or without any resource accesses.
-      - Only used when creating a new Realm.
+      - When creating a new realm, ensure it is created without any default resource accesses.
+      - Only used when creating a new realm.
     type: bool
-    required: true
+    default: false
+    version_added: '1.27.0'
   state:
     description:
     - Define whether the realm should exist or not.
@@ -288,7 +289,7 @@ def main():
     argument_spec.update(
         dict(
             name=dict(type="str", required=True),
-            without_default_access_list=dict(type="bool", required=True),
+            without_default_access_list=dict(type="bool", default=False),
             state=dict(type="str", default="present", choices=["absent", "present"]),
             qos_policy=dict(type="str"),
             eradicate=dict(type="bool", default=False),
