@@ -892,6 +892,41 @@ releases:
       name: purefb_s3acc_export
       namespace: ''
     release_date: '2026-06-19'
+  1.27.0:
+    changes:
+      bugfixes:
+      - purefb_dns - Fix incorrect ``DnsPatch`` class reference (now ``DnsPost``)
+        that made the module wrongly report py-pure-client as not installed
+      - purefb_policy - Fixed a regression where updating an existing NFS export,
+        SMB share, SMB client or network access policy rule failed with a pydantic
+        ``str type expected`` error.
+      - purefb_policy - Rule updates now send the original string values to the API
+        rather than the sorted values used only for the idempotency comparison.
+      - purefb_realm - Fixed incorrect documentation for ``purefb_realm`` module that
+        was causing confusion about the required parameters. Changed from fa_url to
+        fb_url
+      - purefb_remote_cred - Fix reference to non-existent ``ObjectStoreRemoteCredentialsPatch``
+        class in py-pure-client, which caused the module to incorrectly report that
+        the SDK was not installed
+      minor_changes:
+      - purefb - Add ``get_rest_api_version`` helper that returns the highest REST
+        API version supported by the FlashBlade as a string, mirroring FlashArray's
+        ``array.get_rest_version()``.
+      - purefb_fleet - Use the highest supported REST version when comparing against
+        the minimum required API version.
+      - purefb_realm - Use the highest supported REST version when comparing against
+        the minimum required API version.
+      - purefb_s3_export_policy - Use the highest supported REST version when comparing
+        against the minimum required API version.
+      - purefb_s3acc_export - Use the highest supported REST version when comparing
+        against the minimum required API version.
+    fragments:
+    - 556_api_version_helper.yaml
+    - 558_policy_rule_str_fields.yaml
+    - 559_fix_nonexistent_pypureclient_classes.yaml
+    - 560_fix_dns_patch_class.yaml
+    - 561_fix_realm_documentation.yaml
+    release_date: '2026-06-26'
   1.3.0:
     changes:
       bugfixes:

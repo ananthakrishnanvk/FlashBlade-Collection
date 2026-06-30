@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ version_added: "1.7.0"
 short_description:  Manage filesystem user quotas
 description:
     - This module manages user hard quotas for filesystems on Everpure FlashBlade.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -61,12 +61,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-    - purestorage.flashblade.purestorage.fb
+    - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new user (using UID) quota for filesystem named foo
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     quota: 1T
     uid: 1234
@@ -75,7 +75,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create new user (using username) quota for filesystem named foo
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     quota: 1T
     uname: bar
@@ -84,7 +84,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete user quota on filesystem foo for user by UID
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     uid: 1234
     state: absent
@@ -92,7 +92,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete user quota on filesystem foo for user by username
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     uname: bar
     state: absent
@@ -100,7 +100,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Update user quota on filesystem foo for user by username
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     quota: 20G
     uname: bar
@@ -109,7 +109,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Update user quota on filesystem foo for user by UID
-  purestorage.flashblade.purefb_userquota:
+  everpure.flashblade.purefb_userquota:
     name: foo
     quota: 20G
     uid: bar
@@ -128,11 +128,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule, human_to_bytes
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_filesystem,
     get_error_message,
 )

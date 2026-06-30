@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -26,14 +26,14 @@ description:
     groups and volume counts. Additional information can be collected
     based on the configured set of arguements.
 author:
-  - Everpure ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+  - Everpure ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 extends_documentation_fragment:
-  - purestorage.flashblade.purestorage.fb
+  - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: collect FlashBlade inventory
-  purestorage.flashblade.purefb_inventory:
+  everpure.flashblade.purefb_inventory:
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
   register: blade_info
@@ -51,7 +51,7 @@ purefb_inventory:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )

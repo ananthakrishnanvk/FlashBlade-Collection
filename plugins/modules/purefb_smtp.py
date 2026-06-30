@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ description:
 - Configure SMTP for a Everpure FlashBlade.
 - Whilst there can be no relay host, a sender domain must be configured.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   host:
     description:
@@ -42,12 +42,12 @@ options:
     choices: [ "starttls", "" ]
     version_added: 1.19.0
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Configure SMTP settings
-  purestorage.flashblade.purefb_smtp:
+  everpure.flashblade.purefb_smtp:
     host: hostname
     encryption: starttls
     domain: xyz.com
@@ -65,11 +65,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

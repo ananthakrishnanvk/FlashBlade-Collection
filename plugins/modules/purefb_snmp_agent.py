@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -25,7 +25,7 @@ description:
   existing management SNMP agent due to hidden parameters that cannot
   be compared to the play parameters.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   auth_passphrase:
     type: str
@@ -61,17 +61,17 @@ options:
     - SNMP v3 only. Encryption protocol to use
     choices: [ AES, DES ]
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Update v2c SNMP agent
-  purestorage.flashblade.purefb_snmp_agent:
+  everpure.flashblade.purefb_snmp_agent:
     community: public
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Update v3 SNMP agent
-  purestorage.flashblade.purefb_snmp_agent:
+  everpure.flashblade.purefb_snmp_agent:
     version: v3
     auth_protocol: MD5
     auth_passphrase: password
@@ -91,11 +91,11 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

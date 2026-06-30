@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - Add or delete an individual syslog server to the existing
   list of serves.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -62,19 +62,19 @@ options:
     choices: [ management, data-audit ]
     default: management
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Delete exisitng syslog server entries
-  purestorage.flashblade.purefb_syslog:
+  everpure.flashblade.purefb_syslog:
     name: syslog1
     state: absent
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Set array syslog servers
-  purestorage.flashblade.purefb_syslog:
+  everpure.flashblade.purefb_syslog:
     state: present
     name: syslog1
     services:
@@ -97,11 +97,11 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

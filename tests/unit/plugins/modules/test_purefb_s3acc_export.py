@@ -1,4 +1,4 @@
-# Copyright: (c) 2026, Pure Storage Ansible Team <pure-ansible-team@purestorage.com>
+# Copyright: (c) 2026, Pure Storage Ansible Team <pure-ansible-team@everpuredata.com>
 # GNU General Public License v3.0+ (see COPYING.GPLv3 or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Unit tests for purefb_s3acc_export module."""
@@ -54,21 +54,21 @@ sys.modules["tty"] = MagicMock()
 
 # Mock ansible_collections module structure
 sys.modules["ansible_collections"] = MagicMock()
-sys.modules["ansible_collections.purestorage"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade.plugins"] = MagicMock()
-sys.modules["ansible_collections.purestorage.flashblade.plugins.module_utils"] = (
+sys.modules["ansible_collections.everpure"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade.plugins"] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils"] = (
     MagicMock()
 )
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.purefb"
-] = MagicMock()
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.common"
-] = MagicMock()
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.version"
-] = MagicMock()
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.purefb"] = (
+    MagicMock()
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.common"] = (
+    MagicMock()
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.version"] = (
+    MagicMock()
+)
 
 from plugins.modules.purefb_s3acc_export import (
     main,

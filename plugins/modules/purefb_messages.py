@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2022, Simon Dodsley (simon@purestorage.com)
+# (c) 2022, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: List FlashBlade Alert Messages
 description:
 - List Alert messages based on filters provided
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   severity:
     description:
@@ -49,7 +49,7 @@ options:
     type: str
     default: 1w
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
@@ -69,11 +69,11 @@ RETURN = r"""
 import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

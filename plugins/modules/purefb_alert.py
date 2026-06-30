@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# 2018, Simon Dodsley (simon@purestorage.com)
+# 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - Add or delete an individual syslog server to the existing
   list of serves.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     type: str
@@ -50,19 +50,19 @@ options:
     default: info
     choices: [ info, warning, critical ]
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Add new email recipient and enable, or enable existing email
-  purestorage.flashblade.purefb_alert:
+  everpure.flashblade.purefb_alert:
     address: "user@domain.com"
     enabled: true
     state: present
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 - name: Delete existing email recipient
-  purestorage.flashblade.purefb_alert:
+  everpure.flashblade.purefb_alert:
     state: absent
     address: "user@domain.com"
     fb_url: 10.10.10.2
@@ -82,11 +82,11 @@ except ImportError:
 
 import re
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

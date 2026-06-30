@@ -28,7 +28,7 @@ description:
   C(/s3-export-policies) endpoint. The set of rules is reconciled against
   the C(/s3-export-policies/rules) sub-resource on update.
 author:
-- Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -92,12 +92,12 @@ options:
     type: str
     default: ""
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create an S3 export policy with two rules
-  purestorage.flashblade.purefb_s3_export_policy:
+  everpure.flashblade.purefb_s3_export_policy:
     name: my_export_policy
     enabled: true
     rules:
@@ -117,21 +117,21 @@ EXAMPLES = r"""
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Disable an existing S3 export policy
-  purestorage.flashblade.purefb_s3_export_policy:
+  everpure.flashblade.purefb_s3_export_policy:
     name: my_export_policy
     enabled: false
     fb_url: 10.10.10.2
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Rename an S3 export policy
-  purestorage.flashblade.purefb_s3_export_policy:
+  everpure.flashblade.purefb_s3_export_policy:
     name: my_export_policy
     rename: tenant_a_export_policy
     fb_url: 10.10.10.2
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: Delete an S3 export policy
-  purestorage.flashblade.purefb_s3_export_policy:
+  everpure.flashblade.purefb_s3_export_policy:
     name: tenant_a_export_policy
     state: absent
     fb_url: 10.10.10.2
@@ -152,15 +152,15 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
     get_rest_api_version,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.version import (
     LooseVersion,
 )
 

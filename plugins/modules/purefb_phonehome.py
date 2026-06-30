@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Enable or Disable Everpure FlashBlade Phone Home
 description:
 - Enablke or Disable Remote Phone Home for a Everpure FlashBlade.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -31,16 +31,16 @@ options:
     default: present
     choices: [ present, absent, test ]
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Enable Remote Phone Home
-  purestorage.flashblade.purefb_phonehome:
+  everpure.flashblade.purefb_phonehome:
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Disable Remote Phone Home
-  purestorage.flashblade.purefb_phonehome:
+  everpure.flashblade.purefb_phonehome:
     state: absent
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
@@ -56,11 +56,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

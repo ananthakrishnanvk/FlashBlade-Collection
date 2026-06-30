@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -27,7 +27,7 @@ description:
   the first rule will be recovered as long replacement rule is added before
   the snapshot eradication period is exceeded (usuually 24 hours).
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -203,13 +203,13 @@ options:
   filesystem:
     description:
     - List of filesystems to add to a policy on creation
-    - To amend policy members use the I(purestorage.flashblade.purefb_fs) module
+    - To amend policy members use the I(everpure.flashblade.purefb_fs) module
     type: list
     elements: str
   replica_link:
     description:
     - List of filesystem replica links to add to a policy on creation
-    - To amend policy members use the I(purestorage.flashblade.purefb_fs_replica) module
+    - To amend policy members use the I(everpure.flashblade.purefb_fs_replica) module
     type: list
     elements: str
   access:
@@ -395,18 +395,18 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create a simple snapshot policy with no rules
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_policy
     policy_type: snapshot
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a snapshot policy and connect to existing filesystems and filesystem replica links
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_policy_with_members
     policy_type: snapshot
     filesystem:
@@ -418,7 +418,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a snapshot policy with rules
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_policy2
     policy_type: snapshot
     at: 11AM
@@ -428,7 +428,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete filesystem foo from snapshot policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_policy
     policy_type: snapshot
     filesystem: foo
@@ -436,21 +436,21 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete a snapshot policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_policy
     policy_type: snapshot
     state: absent
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an empty object store access policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy
     account: test
     policy_type: access
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an empty object store access policy and assign user
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy
     account: test
     policy_type: access
@@ -458,7 +458,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a object store access policy with simple rule
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     policy_type: access
     account: test
@@ -468,13 +468,13 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an empty SMB client policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_smb_client
     policy_type: smb_client
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an SMB client policy with a client rule
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_smb_client
     policy_type: smb_client
     client: "10.0.1.0/24"
@@ -482,13 +482,13 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an empty NFS export policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_nfs_export
     policy_type: nfs
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create an NFS export policy with a client rule
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_nfs_export
     policy_type: nfs
     atime: true
@@ -499,7 +499,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a new rule for an existing NFS export policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_nfs_export
     policy_type: nfs
     atime: true
@@ -509,7 +509,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete a client rule from an NFS export policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_nfs_export
     client: "10.0.1.0/24"
     policy_type: nfs
@@ -517,14 +517,14 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete an NFS export policy and all associated rules
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_nfs_export
     state: absent
     policy_type: nfs
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete a rule from an object store access policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     account: test
     policy_type: access
@@ -533,7 +533,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete a user from an object store access policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     account: test
     user: fred
@@ -542,7 +542,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete an object store access policy with attached users (USE WITH CAUTION)
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     account: test
     policy_type: access
@@ -551,7 +551,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete an object store access policy with no attached users
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     account: test
     policy_type: access
@@ -559,7 +559,7 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Copy an object store access policy rule to another exisitng policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: test_os_policy_rule
     policy_type: access
     account: test
@@ -569,14 +569,14 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Rename an NFS Export Policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: old_name
     policy_type: nfs
     rename: new_name
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Create a WORM Data Policy
-  purestorage.flashblade.purefb_policy:
+  everpure.flashblade.purefb_policy:
     name: worm1
     policy_type: worm
     default_retention: 5d
@@ -625,15 +625,15 @@ import platform
 from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.facts.utils import get_file_content
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     _findstr,
     get_error_message,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.time_utils import (
     time_to_milliseconds,
 )
 

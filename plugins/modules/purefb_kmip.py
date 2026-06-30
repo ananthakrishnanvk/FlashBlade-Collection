@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2025, Simon Dodsley (simon@purestorage.com)
+# (c) 2025, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage FlashBlade KMIP server objects
 description:
 - Manage FlashBlade KMIP Server objects
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -33,7 +33,7 @@ options:
     description:
     - Name of existing certifcate used to verify FlashBlade
       authenticity to the KMIP server.
-    - Use the I(purestorage.flashblade.purefb_certs) module to create certificates.
+    - Use the I(everpure.flashblade.purefb_certs) module to create certificates.
     type: str
   state:
     description:
@@ -53,12 +53,12 @@ options:
     description:
     - A list of URIs for the configured KMIP servers.
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create KMIP obejct
-  purestorage.flashblade.purefb_kmip:
+  everpure.flashblade.purefb_kmip:
     name: foo
     certificate: bar
     ca_certificate: "{{lookup('file', 'example.crt') }}"
@@ -69,14 +69,14 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Delete KMIP object
-  purestorage.flashblade.purefb_kmip:
+  everpure.flashblade.purefb_kmip:
     name: foo
     state: absent
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Update KMIP object
-  purestorage.flashblade.purefb_kmip:
+  everpure.flashblade.purefb_kmip:
     name: foo
     ca_certificate: "{{lookup('file', 'example2.crt') }}"
     uris:
@@ -96,11 +96,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

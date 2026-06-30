@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2019, Simon Dodsley (simon@purestorage.com)
+# (c) 2019, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Create, modify or delete FlashBlade user accounts
 description:
 - Modify user on a Pure Stoage FlashBlade.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -85,12 +85,12 @@ options:
     default: false
     version_added: "1.21.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Change password for local user (NOT IDEMPOTENT)
-  purestorage.flashblade.purefb_user:
+  everpure.flashblade.purefb_user:
     name: pureuser
     password: anewpassword
     old_password: apassword
@@ -98,21 +98,21 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Set public key for user
-  purestorage.flashblade.purefb_user:
+  everpure.flashblade.purefb_user:
     name: fred
     public_key: "{{lookup('file', 'public_pem_file') }}"
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Clear user lockout
-  purestorage.flashblade.purefb_user:
+  everpure.flashblade.purefb_user:
     name: fred
     clear_lock: true
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Create an API token (TTL of 2 days) and assign a public key to an AD user
-  purestorage.flashblade.purefb_user:
+  everpure.flashblade.purefb_user:
     name: ansible-ad
     ad_user: true
     public_key: "{{lookup('file', 'id_rsa.pub') }}"
@@ -136,14 +136,14 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.time_utils import (
     time_to_milliseconds,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 import re

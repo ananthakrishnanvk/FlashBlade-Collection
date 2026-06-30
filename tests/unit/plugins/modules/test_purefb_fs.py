@@ -1,4 +1,4 @@
-# Copyright: (c) 2026, Pure Storage Ansible Team <pure-ansible-team@purestorage.com>
+# Copyright: (c) 2026, Pure Storage Ansible Team <pure-ansible-team@everpuredata.com>
 # GNU General Public License v3.0+ (see COPYING.GPLv3 or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """Unit tests for purefb_fs module."""
@@ -54,35 +54,35 @@ sys.modules["tty"] = MagicMock()
 
 # Mock ansible_collections module structure
 mock_collections = MagicMock()
-mock_collections.purestorage.flashblade.plugins.module_utils.purefb.get_system = (
+mock_collections.everpure.flashblade.plugins.module_utils.purefb.get_system = (
     MagicMock()
 )
-mock_collections.purestorage.flashblade.plugins.module_utils.purefb.purefb_argument_spec = (
+mock_collections.everpure.flashblade.plugins.module_utils.purefb.purefb_argument_spec = (
     MagicMock()
 )
-mock_collections.purestorage.flashblade.plugins.module_utils.common.get_filesystem = (
+mock_collections.everpure.flashblade.plugins.module_utils.common.get_filesystem = (
     MagicMock()
 )
-mock_collections.purestorage.flashblade.plugins.module_utils.common.get_error_message = (
+mock_collections.everpure.flashblade.plugins.module_utils.common.get_error_message = (
     MagicMock()
 )
 sys.modules["ansible_collections"] = mock_collections
-sys.modules["ansible_collections.purestorage"] = mock_collections.purestorage
-sys.modules["ansible_collections.purestorage.flashblade"] = (
-    mock_collections.purestorage.flashblade
+sys.modules["ansible_collections.everpure"] = mock_collections.everpure
+sys.modules["ansible_collections.everpure.flashblade"] = (
+    mock_collections.everpure.flashblade
 )
-sys.modules["ansible_collections.purestorage.flashblade.plugins"] = (
-    mock_collections.purestorage.flashblade.plugins
+sys.modules["ansible_collections.everpure.flashblade.plugins"] = (
+    mock_collections.everpure.flashblade.plugins
 )
-sys.modules["ansible_collections.purestorage.flashblade.plugins.module_utils"] = (
-    mock_collections.purestorage.flashblade.plugins.module_utils
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils"] = (
+    mock_collections.everpure.flashblade.plugins.module_utils
 )
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.purefb"
-] = mock_collections.purestorage.flashblade.plugins.module_utils.purefb
-sys.modules[
-    "ansible_collections.purestorage.flashblade.plugins.module_utils.common"
-] = mock_collections.purestorage.flashblade.plugins.module_utils.common
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.purefb"] = (
+    mock_collections.everpure.flashblade.plugins.module_utils.purefb
+)
+sys.modules["ansible_collections.everpure.flashblade.plugins.module_utils.common"] = (
+    mock_collections.everpure.flashblade.plugins.module_utils.common
+)
 
 from plugins.modules.purefb_fs import (
     main,
@@ -421,7 +421,7 @@ class TestPurefbFs:
         mock_module.deprecate.assert_any_call(
             "nfs_rules is deprecated. Use export_policy instead.",
             version="2.0.0",
-            collection_name="purestorage.flashblade",
+            collection_name="everpure.flashblade",
         )
         mock_blade.post_file_systems.assert_called_once()
         mock_module.exit_json.assert_called_with(changed=True)

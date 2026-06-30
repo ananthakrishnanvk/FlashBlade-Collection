@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage FlashBlade object lifecycles
 description:
 - Manage lifecycles for object buckets
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -84,12 +84,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create a lifecycle rule called bar for bucket foo
-  purestorage.flashblade.purefb_lifecycle:
+  everpure.flashblade.purefb_lifecycle:
     name: bar
     bucket: foo
     keep_previous_for: 2d
@@ -99,14 +99,14 @@ EXAMPLES = r"""
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Modify a lifecycle rule
-  purestorage.flashblade.purefb_lifecycle:
+  everpure.flashblade.purefb_lifecycle:
     name: bar
     bucket: foo
     keep_previous_for: 10d
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 - name: Delete lifecycle rule foo from bucket foo
-  purestorage.flashblade.purefb_lifecycle:
+  everpure.flashblade.purefb_lifecycle:
     name: foo
     bucket: bar
     state: absent
@@ -128,14 +128,14 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.time_utils import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.time_utils import (
     time_to_milliseconds,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 from datetime import datetime

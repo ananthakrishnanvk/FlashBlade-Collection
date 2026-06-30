@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Simon Dodsley (simon@purestorage.com)
+# (c) 2017, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - Restoring a filesystem from a snapshot is only supported using
   the latest snapshot.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -78,12 +78,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create snapshot foo.ansible
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     suffix: ansible
     fb_url: 10.10.10.2
@@ -91,7 +91,7 @@ EXAMPLES = r"""
     state: present
 
 - name: Create immeadiate snapshot foo.ansible to connected FB bar
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     suffix: ansible
     now: true
@@ -101,7 +101,7 @@ EXAMPLES = r"""
     state: present
 
 - name: Delete snapshot named foo.snap
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     suffix: snap
     fb_url: 10.10.10.2
@@ -109,7 +109,7 @@ EXAMPLES = r"""
     state: absent
 
 - name: Recover deleted snapshot foo.ansible
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     suffix: ansible
     fb_url: 10.10.10.2
@@ -117,14 +117,14 @@ EXAMPLES = r"""
     state: present
 
 - name: Restore filesystem foo (uses latest snapshot)
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
     state: restore
 
 - name: Eradicate snapshot named foo.snap
-  purestorage.flashblade.purefb_snap:
+  everpure.flashblade.purefb_snap:
     name: foo
     suffix: snap
     eradicate: true
@@ -137,11 +137,11 @@ RETURN = r"""
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_filesystem,
     get_error_message,
 )

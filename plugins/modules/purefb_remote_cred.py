@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2020, Simon Dodsley (simon@purestorage.com)
+# (c) 2020, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -24,7 +24,7 @@ description:
 - You must have a correctly configured remote array or target
 - This module is B(not) idempotent when updating existing remote credentials
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -59,12 +59,12 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create remote credential
-  purestorage.flashblade.purefb_remote_cred:
+  everpure.flashblade.purefb_remote_cred:
     name: cred1
     access_key: "3794fb12c6204e19195f"
     secret: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -73,7 +73,7 @@ EXAMPLES = r"""
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Delete remote credential
-  purestorage.flashblade.purefb_remote_cred:
+  everpure.flashblade.purefb_remote_cred:
     name: cred1
     target: target1
     state: absent
@@ -95,14 +95,14 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

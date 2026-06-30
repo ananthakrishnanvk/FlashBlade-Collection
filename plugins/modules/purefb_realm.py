@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2026, Simon Dodsley (simon@purestorage.com)
+# Copyright: (c) 2026, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Manage realms on Everpure FlashBlades
 description:
 - Create, delete or modify realms on Everpure FlashBlades.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -58,12 +58,12 @@ options:
     - This has to be unique and not equal to any existing realm or pods.
     type: str
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create new realm
-  purestorage.flashblade.purefb_realm:
+  everpure.flashblade.purefb_realm:
     name: foo
     without_default_access_list: true
     qos_policy: realm1_qos
@@ -72,20 +72,20 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Destroy realm
-  purestorage.flashblade.purefb_realm:
+  everpure.flashblade.purefb_realm:
     name: foo
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
     state: absent
 
 - name: Recover deleted realm
-  purestorage.flashblade.purefb_realm:
+  everpure.flashblade.purefb_realm:
     name: foo
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Destroy and Eradicate realm
-  purestorage.flashblade.purefb_realm:
+  everpure.flashblade.purefb_realm:
     name: foo
     eradicate: true
     fb_url: 10.10.10.2
@@ -93,7 +93,7 @@ EXAMPLES = r"""
     state: absent
 
 - name: Rename realm foo to bar
-  purestorage.flashblade.purefb_realm:
+  everpure.flashblade.purefb_realm:
     name: foo
     rename: bar
     fb_url: 10.10.10.2
@@ -110,14 +110,14 @@ except ImportError:
     HAS_PURESTORAGE = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.version import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.version import (
     LooseVersion,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
     get_rest_api_version,
 )

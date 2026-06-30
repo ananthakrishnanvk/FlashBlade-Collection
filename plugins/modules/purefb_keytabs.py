@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -16,7 +16,7 @@ short_description: Manage FlashBlade Kerberos Keytabs
 description:
 - Manage Kerberos Keytabs for FlashBlades
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -47,12 +47,12 @@ options:
     type: str
     choices: [ binary, base64 ]
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Import a binary keytab
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: import
     prefix: example
     keytab_file: pure_krb.keytab
@@ -61,7 +61,7 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Import a base64 keytab
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: import
     prefix: example
     keytab_file: pure_krb.keytab.mime
@@ -70,7 +70,7 @@ EXAMPLES = r"""
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Export a keytab
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: export
     name: example.3
     fb_url: 10.10.10.2
@@ -78,19 +78,19 @@ EXAMPLES = r"""
   register: download_file
 
 - name: Delete a keytab
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: absent
     name: example.3
     fb_url: 10.10.10.2
     api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6
 
 - name: Rotate current AD account keytabs
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: rotate
     fb_url: 10.10.10.2
 
 - name: Rotate AD account keytabs by creating new series
-  purestorage.flashblade.purefb_keytabs:
+  everpure.flashblade.purefb_keytabs:
     state: rotate
     name: next_prefix
     fb_url: 10.10.10.2
@@ -113,11 +113,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

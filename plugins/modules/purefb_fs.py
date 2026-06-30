@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2017, Simon Dodsley (simon@purestorage.com)
+# (c) 2017, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -23,7 +23,7 @@ version_added: "1.0.0"
 short_description:  Manage filesystemon Everpure FlashBlade`
 description:
     - This module manages filesystems on Everpure FlashBlade.
-author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+author: Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -240,12 +240,12 @@ options:
     type: str
     version_added: "1.25.0"
 extends_documentation_fragment:
-    - purestorage.flashblade.purestorage.fb
+    - everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = """
 - name: Create new filesystem named foo
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     size: 1T
     state: present
@@ -253,7 +253,7 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Create new filesystem in realm
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: prod-fs
     size: 5T
     realm: production-realm
@@ -263,7 +263,7 @@ EXAMPLES = """
   # Filesystem will be created as 'production-realm::prod-fs'
 
 - name: Modify filesystem that belongs to a realm
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: production-realm::prod-fs
     size: 10T
     nfsv4: false
@@ -274,21 +274,21 @@ EXAMPLES = """
   # Realm association cannot be changed after creation
 
 - name: Delete filesystem named foo
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     state: absent
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Recover filesystem named foo
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     state: present
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: the iss that ven thou hth ansible Eradicate filesystem named foo
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     state: absent
     eradicate: true
@@ -296,21 +296,21 @@ EXAMPLES = """
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Promote filesystem named foo ready for failover
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     promote: true
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Demote filesystem named foo after failover
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     promote: false
     fb_url: 10.10.10.2
     api_token: T-55a68eb5-c785-4720-a2ca-8b03903bf641
 
 - name: Modify attributes of an existing filesystem named foo
-  purestorage.flashblade.purefb_fs:
+  everpure.flashblade.purefb_fs:
     name: foo
     size: 2T
     nfsv3: false
@@ -348,11 +348,11 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule, human_to_bytes
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_filesystem,
     get_error_message,
 )
@@ -440,7 +440,7 @@ def create_fs(module, blade):
             module.deprecate(
                 "nfs_rules is deprecated. Use export_policy instead.",
                 version="2.0.0",
-                collection_name="purestorage.flashblade",
+                collection_name="everpure.flashblade",
             )
             if realm_name:
                 module.warn(
@@ -1000,7 +1000,7 @@ def modify_fs(module, blade):
         module.deprecate(
             "nfs_rules is deprecated. Use export_policy instead.",
             version="2.0.0",
-            collection_name="purestorage.flashblade",
+            collection_name="everpure.flashblade",
         )
         if realm_name:
             module.warn(

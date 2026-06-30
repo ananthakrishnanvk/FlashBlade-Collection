@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2021, Simon Dodsley (simon@purestorage.com)
+# (c) 2021, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Sign Everpure FlashBlade EULA
 description:
 - Sign the FlashBlade EULA for Day 0 config, or change signatory.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   company:
     description:
@@ -43,12 +43,12 @@ options:
     type: str
     required: true
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Sign EULA for FlashBlade
-  purestorage.flashblade.purefb_eula:
+  everpure.flashblade.purefb_eula:
     company: "ACME Storage, Inc."
     name: "Fred Bloggs"
     title: "Storage Manager"
@@ -67,7 +67,7 @@ except ImportError:
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )

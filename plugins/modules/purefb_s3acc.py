@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2018, Simon Dodsley (simon@purestorage.com)
+# (c) 2018, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Create or delete FlashBlade Object Store accounts
 description:
 - Create or delete object store accounts on a Pure Stoage FlashBlade.
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   state:
     description:
@@ -83,18 +83,18 @@ options:
     default: ""
     version_added: "1.22.0"
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: Create object store account foo (with no quotas)
-  purestorage.flashblade.purefb_s3acc:
+  everpure.flashblade.purefb_s3acc:
     name: foo
     fb_url: 10.10.10.2
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 
 - name: Create object store account foo (with quotas)
-  purestorage.flashblade.purefb_s3acc:
+  everpure.flashblade.purefb_s3acc:
     name: foo
     quota: 20480000
     hard_limit: true
@@ -104,7 +104,7 @@ EXAMPLES = r"""
     api_token: e31060a7-21fc-e277-6240-25983c6c4592
 
 - name: Delete object store account foo
-  purestorage.flashblade.purefb_s3acc:
+  everpure.flashblade.purefb_s3acc:
     name: foo
     state: absent
     fb_url: 10.10.10.2
@@ -125,14 +125,14 @@ except ImportError:
     HAS_PYPURECLIENT = False
 
 from ansible.module_utils.basic import AnsibleModule, human_to_bytes
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 

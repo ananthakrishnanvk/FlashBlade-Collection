@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2023, Simon Dodsley (simon@purestorage.com)
+# (c) 2023, Simon Dodsley (simon@everpuredata.com)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ short_description: Employ the internal FlashBlade ping and trace mechanisms
 description:
 - Ping or trace a destination
 author:
-- Everpure Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>
+- Everpure Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
 options:
   action:
     description:
@@ -89,18 +89,18 @@ options:
     - If not specified defaults to all available controllers and selected blades
     type: str
 extends_documentation_fragment:
-- purestorage.flashblade.purestorage.fb
+- everpure.flashblade.everpure.fb
 """
 
 EXAMPLES = r"""
 - name: ping Google DNS server
-  purestorage.flashblade.purefb_pingtrace:
+  everpure.flashblade.purefb_pingtrace:
     destination: 8.8.8.8
     fb_url: 10.10.10.2
     api_token: T-68618f31-0c9e-4e57-aa44-5306a2cf10e3
 
 - name: trace to Google DNS server from CH1.FM0
-  purestorage.flashblade.purefb_pingtrace:
+  everpure.flashblade.purefb_pingtrace:
     action: trace
     destination: 8.8.8.8
     fragment_packet: true
@@ -114,11 +114,11 @@ RETURN = r"""
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.purestorage.flashblade.plugins.module_utils.purefb import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.purefb import (
     get_system,
     purefb_argument_spec,
 )
-from ansible_collections.purestorage.flashblade.plugins.module_utils.common import (
+from ansible_collections.everpure.flashblade.plugins.module_utils.common import (
     get_error_message,
 )
 import re
