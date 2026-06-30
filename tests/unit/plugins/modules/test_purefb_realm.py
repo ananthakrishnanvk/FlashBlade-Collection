@@ -135,7 +135,9 @@ class TestPurefbRealm:
             pass
 
         # Verify post_realms was called
-        mock_blade.post_realms.assert_called_once_with(names=["test-realm"])
+        mock_blade.post_realms.assert_called_once_with(
+            names=["test-realm"], without_default_access_list=True
+        )
 
         # Verify exit_json was called with changed=True
         mock_module.exit_json.assert_called_once()
@@ -202,7 +204,9 @@ class TestPurefbRealm:
             pass
 
         # Verify post_realms was called
-        mock_blade.post_realms.assert_called_once_with(names=["test-realm"])
+        mock_blade.post_realms.assert_called_once_with(
+            names=["test-realm"], without_default_access_list=True
+        )
 
         # Verify QoS policy was assigned
         mock_blade.post_qos_policies_members.assert_called_once_with(
@@ -670,6 +674,7 @@ class TestPurefbRealm:
         mock_module.fail_json = Mock(side_effect=SystemExit)
         mock_module.params = {
             "name": "test-realm",
+            "without_default_access_list": True,
             "state": "present",
             "qos_policy": "test-qos-policy",
             "eradicate": False,
