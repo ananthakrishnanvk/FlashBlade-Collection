@@ -111,7 +111,7 @@ def update_server(module, blade):
         dns_list = server_info.dns
         current_dns = []
         for dns in dns_list:
-            current_dns.append(getattr(server_info.dns[dns], "name", None))
+            current_dns.append(getattr(dns, "name", None))
         if set(module.params["dns"]) != set(current_dns):
             changed = True
             res = blade.patch_servers(
