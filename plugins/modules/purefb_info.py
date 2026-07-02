@@ -793,7 +793,7 @@ def generate_array_conn_dict(blade):
 
 def generate_policies_dict(blade):
     policies_info = {}
-    policies = list(blade.get_policies_all().items)
+    policies = list(blade.get_policies().items)
     for policy in policies:
         policy_name = policy.name
         policies_info[policy_name] = {
@@ -809,6 +809,21 @@ def generate_policies_dict(blade):
                 "keep_for": getattr(policy.rules[0], "keep_for", None),
                 "time_zone": getattr(policy.rules[0], "time_zone", None),
             }
+    return policies_info
+
+
+def generate_all_policies_dict(blade):
+    policies_info = {}
+    policies = list(blade.get_policies_all().items)
+    for policy in policies:
+        policy_name = policy.name
+        policies_info[policy_name] = {
+            "id": policy.id,
+            "enabled": policy.enabled,
+            "is_local": getattr(policy, "is_local", None),
+            "location": getattr(getattr(policy, "location", None), "name", None),
+            "policy_type": policy.policy_type,
+        }
     return policies_info
 
 
@@ -1398,7 +1413,7 @@ def main():
     if "buckets" in subset or "all" in subset:
         info["buckets"] = generate_bucket_dict(blade)
     if "policies" in subset or "all" in subset:
-        info["policies"] = generate_policies_dict(blade)
+        info["policies"] = generate_all_policies_dict(blade)
         info["snapshot_policies"] = generate_policies_dict(blade)
     if "arrays" in subset or "all" in subset:
         info["arrays"] = generate_array_conn_dict(blade)
