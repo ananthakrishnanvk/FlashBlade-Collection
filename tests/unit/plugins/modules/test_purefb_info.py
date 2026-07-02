@@ -260,6 +260,7 @@ class TestPurefbInfo:
     @patch("plugins.modules.purefb_info.generate_admin_dict")
     @patch("plugins.modules.purefb_info.generate_snap_dict")
     @patch("plugins.modules.purefb_info.generate_bucket_dict")
+    @patch("plugins.modules.purefb_info.generate_all_policies_dict")
     @patch("plugins.modules.purefb_info.generate_policies_dict")
     @patch("plugins.modules.purefb_info.generate_array_conn_dict")
     @patch("plugins.modules.purefb_info.generate_file_repl_dict")
@@ -292,6 +293,7 @@ class TestPurefbInfo:
         mock_generate_file_repl,
         mock_generate_array_conn,
         mock_generate_policies,
+        mock_generate_all_policies,
         mock_generate_bucket,
         mock_generate_snap,
         mock_generate_admin,
@@ -329,6 +331,7 @@ class TestPurefbInfo:
         mock_generate_snap.return_value = {}
         mock_generate_bucket.return_value = {}
         mock_generate_policies.return_value = {}
+        mock_generate_all_policies.return_value = {}
         mock_generate_array_conn.return_value = {}
         mock_generate_file_repl.return_value = {}
         mock_generate_bucket_repl.return_value = {}
@@ -356,7 +359,8 @@ class TestPurefbInfo:
         mock_generate_admin.assert_called_once()
         mock_generate_snap.assert_called_once()
         mock_generate_bucket.assert_called_once()
-        mock_generate_policies.assert_called()  # Called multiple times
+        mock_generate_policies.assert_called_once()
+        mock_generate_all_policies.assert_called_once()
         mock_generate_array_conn.assert_called_once()
         mock_module.exit_json.assert_called_once()
         call_args = mock_module.exit_json.call_args[1]
