@@ -554,7 +554,11 @@ def main():
     module = AnsibleModule(
         argument_spec,
         required_if=[
-            ("verify_client_certificate_trust", True, ["trusted_client_certificate_authority"]),
+            (
+                "verify_client_certificate_trust",
+                True,
+                ["trusted_client_certificate_authority"],
+            ),
         ],
         supports_check_mode=True,
     )
