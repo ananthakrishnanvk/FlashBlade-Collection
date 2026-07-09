@@ -17,7 +17,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = r"""
 ---
 module: purefb_tls_policy
-version_added: '1.26.0'
+version_added: '1.28.0'
 short_description: Manage FlashBlade TLS policies
 description:
 - Create, update or delete FlashBlade TLS policies and manage the
@@ -26,7 +26,7 @@ description:
   interface, the TLS versions and ciphers permitted, and optional
   mutual-TLS settings for verifying client certificates.
 author:
-- Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@everpuredata.com>
+- Pure Storage Ansible Team (@avk) <pure-ansible-team@everpuredata.com>
 options:
   name:
     description:
@@ -283,7 +283,7 @@ def _get_attached_interfaces(module, blade):
     if res.status_code != 200:
         return []
     names = []
-    for item in res.items:
+    for item in res.items or []:
         member = getattr(item, "member", None)
         member_name = getattr(member, "name", None)
         if member_name:
@@ -553,6 +553,9 @@ def main():
 
     module = AnsibleModule(
         argument_spec,
+        required_if=[
+            ("verify_client_certificate_trust", True, ["trusted_client_certificate_authority"]),
+        ],
         supports_check_mode=True,
     )
 
