@@ -127,7 +127,7 @@ class TestPurefbUserpolicyAddPolicy:
 
         post = blade.post_object_store_access_policies_object_store_users
         assert post.call_count == 1
-        _, kwargs = post.call_args
+        kwargs = post.call_args[1]
         assert kwargs.get("context_names") == ["array1"]
         assert kwargs.get("member_names") == ["myaccount/myuser"]
         assert kwargs.get("policy_names") == ["myaccount/second-policy"]
